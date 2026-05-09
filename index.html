@@ -5,211 +5,188 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tonii & Ronnie // A Quiet Story</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@300;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
         :root {
-            --bg-deep: #1a161d; 
-            --bg-cover: #2a2431; 
-            --bg-terminal: rgba(26, 22, 29, 0.7); 
-            --text-main: #fff0f5; 
-            --text-sub: #b3a8b3; 
-            --cute-accent: #ffb6c1; 
-            --terminal-border: rgba(255, 182, 193, 0.2); 
+            --bg-deep: #0a080d; 
+            --glass-bg: rgba(20, 15, 20, 0.92);
+            --rose-gold: #e0a1ad;
+            --ruby-red: #9b1b30;
+            --soft-pink: #ffb6c1;
+            --text-main: #fff0f5;
+            --text-dim: rgba(255, 240, 245, 0.6);
+            --glow: rgba(224, 161, 173, 0.5);
         }
 
         body {
             background-color: var(--bg-deep);
             color: var(--text-main);
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Playfair Display', serif;
             margin: 0;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            overscroll-behavior: none; 
+            overscroll-behavior: none;
         }
 
+        /* REALISTIC SCANNING HEART MONITOR */
+        .ekg-wrapper {
+            position: absolute;
+            top: 50%; left: 0;
+            width: 100%; 
+            height: 180px;
+            transform: translateY(-50%);
+            z-index: 5;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .ekg-svg { width: 100%; height: 100%; }
+
+        .ekg-path {
+            stroke: var(--rose-gold);
+            stroke-width: 3.5;
+            fill: none;
+            filter: drop-shadow(0 0 12px var(--rose-gold)) drop-shadow(0 0 4px var(--ruby-red));
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* The scanning mask that reveals the heartbeat spikes */
+        .scan-mask {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(to right, 
+                var(--bg-deep) 0%, 
+                transparent 5%, 
+                transparent 45%, 
+                var(--bg-deep) 50%
+            );
+            background-size: 200% 100%;
+            animation: monitorScan 4s linear infinite;
+        }
+
+        @keyframes monitorScan {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+
+        /* FINAL SCENE & HEART BUTTON */
         .final-scene {
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            z-index: 1; 
-            opacity: 0; 
-            transition: opacity 3s ease-in-out; 
-            pointer-events: none; 
+            z-index: 1; opacity: 0;
+            transition: opacity 3.5s ease-in-out;
             background-color: #000;
         }
 
         .final-scene img {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
-            object-position: center;
-            filter: brightness(0.6) sepia(0.3) hue-rotate(-15deg); 
+            filter: brightness(0.25) contrast(1.2);
         }
 
-        /* Moving Heartbeat Overlay */
-        .heartbeat-overlay {
+        .home-heart-container {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 5; /* Above image, below return button */
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 30;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            pointer-events: none; /* Let clicks pass through to button */
         }
 
-        .final-heart {
-            font-size: 6rem;
-            color: var(--cute-accent);
-            text-shadow: 0 0 40px rgba(255, 182, 193, 0.9);
-            margin-bottom: 20px;
-            animation: finalFloat 4s ease-in-out infinite;
-        }
-
-        .waveform-line {
-            width: 80%;
-            height: 4px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                var(--cute-accent) 20%, 
-                var(--cute-accent) 80%, 
-                transparent 100%
-            );
-            border-radius: 2px;
-            box-shadow: 0 0 25px rgba(255, 182, 193, 0.8);
-            animation: moveBeat 2.5s linear infinite;
-        }
-
-        @keyframes finalFloat { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.1); opacity: 1; } }
-        @keyframes moveBeat { 0% { transform: translateX(-5px) skewX(0deg); opacity: 0.8; } 50% { transform: translateX(5px) skewX(10deg); opacity: 1; } 100% { transform: translateX(-5px) skewX(0deg); opacity: 0.8; } }
-
-        #return-home {
-            position: fixed;
-            bottom: 40px;
-            z-index: 20;
+        .heart-home-btn {
             background: none;
             border: none;
-            color: var(--cute-accent);
-            font-size: 3.5rem;
+            color: var(--soft-pink);
+            font-size: 8.5rem;
             cursor: pointer;
+            text-shadow: 0 0 50px var(--ruby-red), 0 0 20px var(--rose-gold);
+            animation: heartBeatPulse 1.2s ease-in-out infinite;
+            pointer-events: auto;
             opacity: 0;
-            display: none;
-            transition: opacity 2s ease, transform 0.3s ease;
-            text-shadow: 0 0 20px rgba(255, 182, 193, 0.8);
+            transition: opacity 2s ease 1.5s;
         }
 
-        #return-home:hover { transform: scale(1.2); }
-
-        #rainCanvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 2; 
-            opacity: 0; 
-            transition: opacity 2s ease-in-out;
-            pointer-events: none;
+        @keyframes heartBeatPulse {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.18); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.12); }
         }
 
+        /* INTERFACE & TYPOGRAPHY */
         #cover {
             position: absolute;
-            z-index: 15;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            z-index: 100;
             width: 100%; height: 100%;
-            background: radial-gradient(circle, var(--bg-cover) 0%, #100e12 100%);
-            transition: opacity 1.5s ease;
-            padding: 20px;
-            box-sizing: border-box;
+            background: radial-gradient(circle at center, #1a141f 0%, #050406 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 2s ease;
         }
 
-        .heart { color: var(--cute-accent); font-size: 3.2rem; margin-bottom: 15px; animation: float 4s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
-        .book-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 4.8rem;
-            color: var(--cute-accent);
-            margin: 0;
-            text-shadow: 0 0 25px rgba(255, 182, 193, 0.4);
-            line-height: 1.1;
-        }
-
-        .subtitle { color: var(--text-sub); letter-spacing: 4px; margin-top: 15px; font-size: 0.8rem; text-transform: uppercase; font-weight: 600; }
-
-        .open-btn, .route-btn {
-            background: transparent;
-            border: 1px solid var(--cute-accent);
-            color: var(--cute-accent);
-            padding: 14px 40px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 40px;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            transition: all 0.4s ease;
-            text-transform: uppercase;
-        }
-
-        .open-btn:hover, .route-btn:hover { background: var(--cute-accent); color: #000; box-shadow: 0 0 25px rgba(255, 182, 193, 0.6); }
-
-        .route-btn { margin-top: 15px; display: block; width: 100%; padding: 12px 20px; font-size: 0.9rem;}
+        .book-title { font-family: 'Dancing Script', cursive; font-size: 5.5rem; color: var(--rose-gold); margin: 0; text-shadow: 0 0 30px var(--glow); line-height: 1; text-align: center; }
+        .subtitle { font-family: 'Playfair Display', serif; font-style: italic; color: var(--text-dim); font-size: 1.2rem; margin-top: 10px; letter-spacing: 2px; }
 
         #selection-container, #book-container {
             display: none;
             position: relative;
-            z-index: 10; 
-            width: 85%;
-            max-width: 550px;
+            z-index: 60;
+            width: 88%;
+            max-width: 520px;
+            background: var(--glass-bg);
+            padding: 50px 35px;
+            border-radius: 40px;
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(224, 161, 173, 0.2);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7);
             text-align: center;
-            background: var(--bg-terminal);
-            padding: 45px;
-            border-radius: 20px;
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--terminal-border);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            transition: opacity 1s ease; 
-            box-sizing: border-box;
             opacity: 0;
+            transition: opacity 1.5s ease;
         }
 
-        .page {
-            display: none;
-            flex-direction: column;
-            animation: slideUp 0.8s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
-            position: relative; 
-            z-index: 10; 
+        h2 { font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: var(--rose-gold); margin-bottom: 25px; font-weight: normal; }
+        p { font-size: 1.15rem; line-height: 1.8; color: var(--text-main); margin-bottom: 20px; font-weight: 300; }
+        b { color: var(--soft-pink); font-weight: 700; text-shadow: 0 0 10px rgba(255, 182, 193, 0.4); }
+
+        .route-btn, .open-btn {
+            background: linear-gradient(135deg, rgba(155, 27, 48, 0.3), rgba(224, 161, 173, 0.15));
+            border: 1px solid var(--rose-gold);
+            color: var(--rose-gold);
+            padding: 18px 45px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.5s;
+            margin-top: 20px;
         }
 
+        .route-btn:hover, .open-btn:hover { background: var(--rose-gold); color: var(--bg-deep); box-shadow: 0 0 40px var(--glow); transform: translateY(-3px); }
+
+        .nav-btns { margin-top: 35px; display: flex; justify-content: center; gap: 15px; }
+        .nav-btn { background: transparent; border: 1px solid rgba(224, 161, 173, 0.3); color: var(--text-dim); padding: 12px 25px; border-radius: 30px; text-transform: uppercase; font-size: 0.8rem; cursor: pointer; transition: 0.3s; }
+        .nav-btn:hover { border-color: var(--rose-gold); color: var(--rose-gold); background: rgba(224, 161, 173, 0.1); }
+
+        .page { display: none; flex-direction: column; animation: luxeSlide 1s ease forwards; opacity: 0; }
         .active-page { display: flex; }
+        @keyframes luxeSlide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-
-        h2 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--cute-accent); margin-bottom: 12px; font-weight: normal; text-shadow: 0 0 10px rgba(255, 182, 193, 0.3); }
-        p { line-height: 1.7; font-size: 1.15rem; color: var(--text-main); font-weight: 300; margin-bottom: 15px; }
-        b { color: var(--cute-accent); font-weight: 600; text-shadow: 0 0 5px rgba(255, 182, 193, 0.2); }
-
-        .nav-btns { margin-top: 25px; display: flex; justify-content: center; gap: 15px; }
-        .nav-btn { background: none; border: 1px solid rgba(179, 168, 179, 0.4); color: var(--text-sub); cursor: pointer; padding: 10px 28px; border-radius: 25px; font-family: 'Quicksand', sans-serif; font-size: 0.9rem; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
-        .nav-btn:hover { color: var(--cute-accent); border-color: var(--cute-accent); background: rgba(255, 182, 193, 0.1);}
+        #rainCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; opacity: 0; transition: opacity 2s ease; pointer-events: none; }
 
         @media (max-width: 600px) {
-            .book-title { font-size: 3.5rem; }
-            #book-container, #selection-container { width: 90%; padding: 25px 20px; }
-            h2 { font-size: 2.2rem; }
-            p { font-size: 1rem; }
-            .final-heart { font-size: 4rem; }
-            .waveform-line { width: 90%; height: 3px; }
+            .book-title { font-size: 4rem; }
+            #selection-container, #book-container { padding: 40px 20px; width: 92%; }
+            h2 { font-size: 2.8rem; }
+            .heart-home-btn { font-size: 6.5rem; }
         }
     </style>
 </head>
@@ -220,114 +197,105 @@
 
     <div class="final-scene" id="finalScene">
         <img src="image_f3b00c.png" alt="Together">
-        <div class="heartbeat-overlay">
-            <div class="final-heart">💖</div>
-            <div class="waveform-line"></div>
+        <div class="ekg-wrapper" id="ekg">
+            <svg class="ekg-svg" viewBox="0 0 1000 150" preserveAspectRatio="none">
+                <path class="ekg-path" d="M0,75 L250,75 L260,60 L275,75 L285,15 L305,130 L325,75 L340,90 L355,75 L650,75 L660,60 L675,75 L685,15 L705,130 L725,75 L740,90 L755,75 L1000,75" />
+            </svg>
+            <div class="scan-mask"></div>
+        </div>
+        <div class="home-heart-container">
+            <button class="heart-home-btn" id="homeBtn" onclick="location.reload()">❤️</button>
         </div>
     </div>
 
-    <button id="return-home" onclick="location.reload()">❤️</button>
     <canvas id="rainCanvas"></canvas>
 
     <div id="cover">
-        <div class="heart">💖</div>
+        <div style="font-size: 4rem; color: var(--ruby-red); animation: float 4s ease-in-out infinite; margin-bottom: 20px;">💖</div>
         <h1 class="book-title">Tonii & Ronnie</h1>
-        <p class="subtitle">Just a quiet little story</p>
+        <p class="subtitle">A Quiet Story of Us</p>
         <button class="open-btn" onclick="startExperience()">Open Our Story</button>
     </div>
 
     <div id="selection-container">
-        <h2>Choose a Path</h2>
-        <p style="font-size: 0.95rem; margin-bottom: 25px;">Which chapter do you want to read tonight?</p>
+        <h2>The Choice</h2>
+        <p>Which chapter would you like to explore?</p>
         <button class="route-btn" style="width:100%;" onclick="startRoute('A')">The Journey So Far</button>
-        <button class="route-btn" style="width:100%; margin-top:10px;" onclick="startRoute('B')">The Recent Chapters</button>
+        <button class="route-btn" style="width:100%; margin-top:20px;" onclick="startRoute('B')">The Recent Chapters</button>
     </div>
 
     <div id="book-container">
-        
         <div class="page" id="p1">
             <h2>01. New Addington</h2>
-            <p>It started a long time ago in <b>New Addington</b>. Life was chaotic back then, but you were always a safe space. You made sure I was fed, looked after <b>Snowey</b>, and always showed up for our meet-ups.</p>
-            <p>You were there for me even when I was lying—and you absolutely knew I was. You were the anchor I didn't know I needed.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">Next Page →</button></div>
+            <p>It started a long time ago in <b>New Addington</b>. Life was chaotic back then, but you were always a <b>safe space</b>. You made sure I was fed, looked after <b>Snowey</b>, and always showed up for our meet-ups.</p>
+            <p>You were there for me even when I was lying—and you absolutely knew I was. You were the <b>anchor</b> I didn't know I needed.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">Next →</button></div>
         </div>
-
         <div class="page" id="p2">
             <h2>02. Frozen Nights</h2>
-            <p>I still laugh thinking about freezing in the rain on that moped. But my favorite memories are the quiet ones. Endless nights watching <b>Prison Break</b> and <b>Ramsay's Kitchen Nightmares</b>.</p>
-            <p>Just standing there, looking in the mirror together. Those simple moments meant the world to me then, and they mean even more now.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(1)">← Back</button><button class="nav-btn" onclick="nextPage(3)">Next Page →</button></div>
+            <p>I still laugh thinking about freezing in the rain on that <b>moped</b>. But my favorite memories are the quiet ones. Endless nights watching <b>Prison Break</b> and <b>Ramsay's Kitchen Nightmares</b>.</p>
+            <p>Just standing there, looking in the <b>mirror together</b>. Those simple moments meant the world to me then, and they mean even more now.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(1)">← Back</button><button class="nav-btn" onclick="nextPage(3)">Next →</button></div>
         </div>
-
         <div class="page" id="p3">
             <h2>03. The High Ground</h2>
-            <p>Remember the <b>Call of Duty Zombies</b> marathons? Surviving round after round on the phone until the sun came up. We were a team before we even knew how to be one in real life.</p>
-            <p>Even when the world felt heavy, those games and those calls were a little bubble where everything felt okay.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">← Back</button><button class="nav-btn" onclick="nextPage(4)">Next Page →</button></div>
+            <p>Remember the <b>Call of Duty Zombies</b> marathons? Surviving round after round on the phone until the sun came up. We were a <b>team</b> before we even knew how to be one in real life.</p>
+            <p>Even when the world felt heavy, those games and those calls were a <b>little bubble</b> where everything felt okay.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">← Back</button><button class="nav-btn" onclick="nextPage(4)">Next →</button></div>
         </div>
-
         <div class="page" id="p4">
             <h2>04. The Keepsakes</h2>
             <p>Finding out you kept those old <b>GHDs</b>—and that little heart with the <b>'R'</b> on your finger—made me smile. It was like a sign that the story wasn't quite over.</p>
-            <p>It showed me that even when we were walking different paths, a piece of us stayed behind. I’ve never forgotten that.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(3)">← Back</button><button class="nav-btn" onclick="nextPage(5)">Next Page →</button></div>
+            <p>It showed me that even when we were walking different paths, a <b>piece of us</b> stayed behind. I’ve never forgotten that.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(3)">← Back</button><button class="nav-btn" onclick="nextPage(5)">Next →</button></div>
         </div>
-
         <div class="page" id="p5">
             <h2>05. Growing Up</h2>
-            <p>Watching you break cycles for <b>Lucien</b> while I do the same for <b>Jayjay</b> and <b>Ryan</b> makes me so incredibly proud. We had to learn how to be parents on our own.</p>
-            <p>We grew up, we changed, and we learned that being an anchor for someone else is the most important job we’ll ever have.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(4)">← Back</button><button class="nav-btn" onclick="nextPage(6)">Next Page →</button></div>
+            <p>Watching you break cycles for <b>Lucien</b> while I do the same for <b>Jayjay</b> and <b>Ryan</b> makes me so incredibly proud. We had to learn how to be <b>parents</b> on our own.</p>
+            <p>We grew up, we changed, and we learned that being an <b>anchor</b> for someone else is the most important job we’ll ever have.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(4)">← Back</button><button class="nav-btn" onclick="nextPage(6)">Next →</button></div>
         </div>
-
         <div class="page" id="p6">
             <h2>06. The Corner</h2>
-            <p>You’re an absolute ray of sunshine, Tonii. No matter how much time passes, I’m just grateful to be in your corner, whenever you need a friend.</p>
-            <p>Thank you for being part of my history, and for letting me be part of yours.</p>
-            <p style="font-family: 'Dancing Script'; font-size: 2rem; color: var(--cute-accent); margin-top: 10px;">Ronnie x</p>
+            <p>You’re an absolute <b>ray of sunshine</b>, Tonii. No matter how much time passes, I’m just grateful to be in <b>your corner</b>, whenever you need a friend.</p>
+            <p>Thank you for being part of my future, and for letting me be part of yours. <br><b>Ronnie x</b></p>
             <div class="nav-btns"><button class="nav-btn" onclick="nextPage(5)">← Back</button><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
         </div>
 
         <div class="page" id="p7">
             <h2>01. Reconnecting</h2>
-            <p>When I sent that message in April, I expected nothing back. I just wanted to say I was genuinely sorry for the person I used to be.</p>
-            <p>But then you replied. Hearing you say you had <b>no bad feelings</b> and wishing me nothing but healing ✨ was a weight off my shoulders I didn't know I was carrying.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">Next Page →</button></div>
+            <p>When I sent that message in <b>April</b>, I expected nothing back. I just wanted to say I was genuinely sorry for the person I used to be.</p>
+            <p>But then you replied. Hearing you say you had <b>no bad feelings</b> and wishing me nothing but <b>healing ✨</b> was a weight off my shoulders.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">Next →</button></div>
         </div>
-
         <div class="page" id="p8">
-            <h2>02. 20:52 PM</h2>
+            <h2>02. Happiness</h2>
             <p>I remember what I told you. I work hard and I treat my kids good. I want to do everything just to <b>make you smile</b>.</p>
-            <p>I do it as much for me as I do for you, because seeing you happy is the best thing about my day. It’s a peace I don’t want to lose.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(7)">← Back</button><button class="nav-btn" onclick="nextPage(9)">Next Page →</button></div>
+            <p>I do it as much for me as I do for you, because <b>seeing you happy</b> is the best thing about my day. It’s a peace I don’t want to lose.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(7)">← Back</button><button class="nav-btn" onclick="nextPage(9)">Next →</button></div>
         </div>
-
         <div class="page" id="p9">
-            <h2>03. Taking Care</h2>
-            <p>I love being in a position where I can look after you. Sending you that money for your food made me feel good—it wasn't about the money, it was about knowing you were taken care of while you were out.</p>
-            <p>Being able to provide and take that little bit of stress away is exactly why I work as hard as I do. I'll always have your back.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">← Back</button><button class="nav-btn" onclick="nextPage(10)">Next Page →</button></div>
+            <h2>03. Providing</h2>
+            <p>I love being in a position where I can <b>look after you</b>. Sending you that <b>money for your food</b> made me feel good—it was about knowing you were sorted while you were out.</p>
+            <p>Being able to provide and take that stress away is exactly why I work hard. I'll always have <b>your back</b>.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">← Back</button><button class="nav-btn" onclick="nextPage(10)">Next →</button></div>
         </div>
-
         <div class="page" id="p10">
-            <h2>04. Relief</h2>
-            <p>I was so glad when the delivery for <b>your son's new clothes</b> finally came through. Seeing you relieved and able to go to bed happy was the best news I had all week.</p>
-            <p>Your peace of mind is important to me. If the house is calm and you're sleeping well, then everything is going right.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(9)">← Back</button><button class="nav-btn" onclick="nextPage(11)">Next Page →</button></div>
+            <h2>04. Support</h2>
+            <p>I was so glad when the delivery for <b>your son's new clothes</b> finally came through. Seeing you <b>relieved</b> and able to go to bed happy was the best news.</p>
+            <p>Your <b>peace of mind</b> is important to me. If the house is calm and you're sleeping well, then everything is going right.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(9)">← Back</button><button class="nav-btn" onclick="nextPage(11)">Next →</button></div>
         </div>
-
         <div class="page" id="p11">
-            <h2>05. The Clause</h2>
-            <p>The <b>"No Apologies"</b> rule is now law. If you break it, you have to pick a completely random emoji and send it with zero context. I'm ready for the chaos.</p>
-            <p>We've both done a lot of healing. It feels good to just be present, without any of the old weight hanging over us.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(10)">← Back</button><button class="nav-btn" onclick="nextPage(12)">Next Page →</button></div>
+            <h2>05. Present</h2>
+            <p>The <b>"No Apologies"</b> rule is now law. If you break it, you have to pick a completely random emoji and send it with zero context. I'm ready for the <b>chaos</b>.</p>
+            <p>We've both done a lot of <b>healing</b>. It feels good to just be present, without any of the old weight hanging over us.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(10)">← Back</button><button class="nav-btn" onclick="nextPage(12)">Next →</button></div>
         </div>
-
         <div class="page" id="p12">
-            <h2>06. No Pressure</h2>
-            <p>I love the peace we have now. No pressure, no expectations. Just sharing TikToks and knowing we're there for each other.</p>
-            <p>Thank you for letting me back in, Tonii. Let’s just keep this good energy going. You know I'll never miss a message.</p>
-            <p style="font-family: 'Dancing Script'; font-size: 2rem; color: var(--cute-accent); margin-top: 10px;">Ronnie x</p>
+            <h2>06. Energy</h2>
+            <p>I love the <b>peace</b> we have now. No pressure, no expectations. Just sharing <b>TikToks</b> and knowing we're there for each other.</p>
+            <p>Thank you for letting me back in, Tonii. Let’s just keep this <b>good energy</b> going. You know I'll never miss a message. <br><b>Ronnie x</b></p>
             <div class="nav-btns"><button class="nav-btn" onclick="nextPage(11)">← Back</button><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
         </div>
     </div>
@@ -343,9 +311,9 @@
         class Drop {
             constructor() { this.x = Math.random() * width; this.y = Math.random() * height; this.speed = Math.random() * 2 + 2; this.len = Math.random() * 15 + 10; }
             fall() { this.y += this.speed; if (this.y > height) { this.y = -20; this.x = Math.random() * width; }
-                ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x, this.y + this.len); ctx.strokeStyle = 'rgba(255, 182, 193, 0.2)'; ctx.stroke(); }
+                ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x, this.y + this.len); ctx.strokeStyle = 'rgba(224, 161, 173, 0.2)'; ctx.stroke(); }
         }
-        for (let i = 0; i < 70; i++) raindrops.push(new Drop());
+        for (let i = 0; i < 75; i++) raindrops.push(new Drop());
         function animate() { ctx.clearRect(0, 0, width, height); raindrops.forEach(d => d.fall()); requestAnimationFrame(animate); }
 
         function startExperience() {
@@ -384,8 +352,8 @@
             document.getElementById('finalScene').style.opacity = '1';
             setTimeout(() => {
                 document.getElementById('book-container').style.display = 'none';
-                const btn = document.getElementById('return-home');
-                btn.style.display = 'block'; setTimeout(() => btn.style.opacity = '1', 100);
+                document.getElementById('ekg').style.opacity = '1';
+                document.getElementById('homeBtn').style.opacity = '1';
             }, 1500);
         }
     </script>
