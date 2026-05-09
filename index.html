@@ -46,8 +46,46 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            filter: brightness(0.7) sepia(0.2) hue-rotate(-10deg); 
+            filter: brightness(0.6) sepia(0.3) hue-rotate(-15deg); 
         }
+
+        /* Moving Heartbeat Overlay */
+        .heartbeat-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 5; /* Above image, below return button */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none; /* Let clicks pass through to button */
+        }
+
+        .final-heart {
+            font-size: 6rem;
+            color: var(--cute-accent);
+            text-shadow: 0 0 40px rgba(255, 182, 193, 0.9);
+            margin-bottom: 20px;
+            animation: finalFloat 4s ease-in-out infinite;
+        }
+
+        .waveform-line {
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--cute-accent) 20%, 
+                var(--cute-accent) 80%, 
+                transparent 100%
+            );
+            border-radius: 2px;
+            box-shadow: 0 0 25px rgba(255, 182, 193, 0.8);
+            animation: moveBeat 2.5s linear infinite;
+        }
+
+        @keyframes finalFloat { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.1); opacity: 1; } }
+        @keyframes moveBeat { 0% { transform: translateX(-5px) skewX(0deg); opacity: 0.8; } 50% { transform: translateX(5px) skewX(10deg); opacity: 1; } 100% { transform: translateX(-5px) skewX(0deg); opacity: 0.8; } }
 
         #return-home {
             position: fixed;
@@ -170,6 +208,8 @@
             #book-container, #selection-container { width: 90%; padding: 25px 20px; }
             h2 { font-size: 2.2rem; }
             p { font-size: 1rem; }
+            .final-heart { font-size: 4rem; }
+            .waveform-line { width: 90%; height: 3px; }
         }
     </style>
 </head>
@@ -180,6 +220,10 @@
 
     <div class="final-scene" id="finalScene">
         <img src="image_f3b00c.png" alt="Together">
+        <div class="heartbeat-overlay">
+            <div class="final-heart">💖</div>
+            <div class="waveform-line"></div>
+        </div>
     </div>
 
     <button id="return-home" onclick="location.reload()">❤️</button>
