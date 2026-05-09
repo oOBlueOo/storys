@@ -118,8 +118,6 @@
             font-size: 1rem;
             letter-spacing: 1px;
             transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
             text-transform: uppercase;
         }
 
@@ -127,28 +125,10 @@
 
         .route-btn { margin-top: 15px; display: block; width: 100%; padding: 12px 20px; font-size: 0.9rem;}
 
-        #selection-container {
+        #selection-container, #book-container {
             display: none;
             position: relative;
             z-index: 10; 
-            width: 85%;
-            max-width: 400px;
-            text-align: center;
-            background: var(--bg-terminal);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--terminal-border);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            transition: opacity 1s ease; 
-            box-sizing: border-box;
-            opacity: 0;
-        }
-
-        #book-container {
-            display: none;
-            position: relative;
-            z-index: 5; 
             width: 85%;
             max-width: 550px;
             text-align: center;
@@ -158,7 +138,7 @@
             backdrop-filter: blur(8px);
             border: 1px solid var(--terminal-border);
             box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            transition: opacity 1.5s ease; 
+            transition: opacity 1s ease; 
             box-sizing: border-box;
             opacity: 0;
         }
@@ -190,21 +170,19 @@
             #book-container, #selection-container { width: 90%; padding: 25px 20px; }
             h2 { font-size: 2.2rem; }
             p { font-size: 1rem; }
-            #return-home { bottom: 20px; font-size: 3rem; }
         }
     </style>
 </head>
 <body>
 
-    <audio id="myAudio" loop><source src="raindrops.mp4" type="audio/mp4"></audio>
-    <audio id="routeBAudio" loop><source src="feeling.mp3" type="audio/mpeg"></audio>
+    <audio id="myAudio" loop preload="auto"><source src="raindrops.mp4" type="audio/mp4"></audio>
+    <audio id="routeBAudio" loop preload="auto"><source src="feeling.mp3" type="audio/mpeg"></audio>
 
     <div class="final-scene" id="finalScene">
         <img src="image_f3b00c.png" alt="Together">
     </div>
 
-    <button id="return-home" onclick="resetToHome()">❤️</button>
-
+    <button id="return-home" onclick="location.reload()">❤️</button>
     <canvas id="rainCanvas"></canvas>
 
     <div id="cover">
@@ -217,11 +195,12 @@
     <div id="selection-container">
         <h2>Choose a Path</h2>
         <p style="font-size: 0.95rem; margin-bottom: 25px;">Which chapter do you want to read tonight?</p>
-        <button class="route-btn" onclick="startRoute('A')">The Journey So Far</button>
-        <button class="route-btn" onclick="startRoute('B')">The Recent Chapters</button>
+        <button class="route-btn" style="width:100%;" onclick="startRoute('A')">The Journey So Far</button>
+        <button class="route-btn" style="width:100%; margin-top:10px;" onclick="startRoute('B')">The Recent Chapters</button>
     </div>
 
     <div id="book-container">
+        
         <div class="page" id="p1">
             <h2>01. New Addington</h2>
             <p>It started a long time ago in <b>New Addington</b>. Life was chaotic back then, but you were always a safe space. You made sure I was fed, looked after <b>Snowey</b>, and always showed up for our meet-ups.</p>
@@ -312,57 +291,26 @@
     <script>
         const canvas = document.getElementById('rainCanvas');
         const ctx = canvas.getContext('2d');
-        let width, height;
-        let raindrops = [];
+        let width, height, raindrops = [];
 
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
 
         class Drop {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height - height;
-                this.speed = Math.random() * 2 + 1; 
-                this.length = Math.random() * 15 + 10;
-                this.opacity = Math.random() * 0.3 + 0.1; 
-            }
-            fall() {
-                this.y += this.speed;
-                if (this.y > height) {
-                    this.y = Math.random() * -100;
-                    this.x = Math.random() * width;
-                }
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x, this.y + this.length);
-                ctx.strokeStyle = `rgba(255, 182, 193, ${this.opacity})`; 
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
+            constructor() { this.x = Math.random() * width; this.y = Math.random() * height; this.speed = Math.random() * 2 + 2; this.len = Math.random() * 15 + 10; }
+            fall() { this.y += this.speed; if (this.y > height) { this.y = -20; this.x = Math.random() * width; }
+                ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x, this.y + this.len); ctx.strokeStyle = 'rgba(255, 182, 193, 0.2)'; ctx.stroke(); }
         }
-
-        for (let i = 0; i < 70; i++) { raindrops.push(new Drop()); }
-
-        function animateRain() {
-            ctx.clearRect(0, 0, width, height);
-            raindrops.forEach(drop => drop.fall());
-            requestAnimationFrame(animateRain);
-        }
+        for (let i = 0; i < 70; i++) raindrops.push(new Drop());
+        function animate() { ctx.clearRect(0, 0, width, height); raindrops.forEach(d => d.fall()); requestAnimationFrame(animate); }
 
         function startExperience() {
             document.getElementById('cover').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('cover').style.display = 'none';
-                var selectContainer = document.getElementById('selection-container');
-                selectContainer.style.display = 'block';
-                void selectContainer.offsetWidth; 
-                selectContainer.style.opacity = '1';
-                canvas.style.opacity = '1';
-                animateRain();
+                const sel = document.getElementById('selection-container');
+                sel.style.display = 'block'; setTimeout(() => sel.style.opacity = '1', 50);
+                document.getElementById('rainCanvas').style.opacity = '1'; animate();
             }, 1000);
         }
 
@@ -370,14 +318,13 @@
             document.getElementById('selection-container').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('selection-container').style.display = 'none';
-                var bookContainer = document.getElementById('book-container');
-                bookContainer.style.display = 'block';
-                bookContainer.style.opacity = '1';
-                if(route === 'A') {
-                    var a = document.getElementById("myAudio"); a.volume = 0.05; a.play().catch(e => console.log("Audio blocked"));
+                const book = document.getElementById('book-container');
+                book.style.display = 'block'; setTimeout(() => book.style.opacity = '1', 50);
+                if(route === 'A') { 
+                    const a = document.getElementById("myAudio"); a.volume = 0.05; a.play().catch(() => {});
                     document.getElementById('p1').classList.add('active-page');
-                } else {
-                    var b = document.getElementById("routeBAudio"); b.volume = 0.15; b.play().catch(e => console.log("Audio blocked"));
+                } else { 
+                    const b = document.getElementById("routeBAudio"); b.volume = 0.15; b.play().catch(() => {});
                     document.getElementById('p7').classList.add('active-page');
                 }
             }, 800);
@@ -393,13 +340,10 @@
             document.getElementById('finalScene').style.opacity = '1';
             setTimeout(() => {
                 document.getElementById('book-container').style.display = 'none';
-                var btn = document.getElementById('return-home');
-                btn.style.display = 'block';
-                setTimeout(() => { btn.style.opacity = '1'; }, 100);
+                const btn = document.getElementById('return-home');
+                btn.style.display = 'block'; setTimeout(() => btn.style.opacity = '1', 100);
             }, 1500);
         }
-
-        function resetToHome() { location.reload(); }
     </script>
 </body>
 </html>
