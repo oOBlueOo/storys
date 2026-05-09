@@ -158,7 +158,7 @@
             backdrop-filter: blur(8px);
             border: 1px solid var(--terminal-border);
             box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            transition: opacity 1.5s ease; 
+            transition: opacity 1s ease; 
             box-sizing: border-box;
             opacity: 0;
         }
@@ -281,7 +281,7 @@
 
         <div class="page" id="p9">
             <h2>03. Taking Care</h2>
-            <p>I love being in a position where I can look after you. Sending you that money for your food made me feel good—it wasn't about the money, it was about knowing you were sorted.</p>
+            <p>I love being in a position where I can look after you. Sending you that money for your food made me feel good—it wasn't about the money, it was about knowing you were looked after.</p>
             <p>Being able to provide and take that little bit of stress away is exactly why I work as hard as I do. I'll always have your back.</p>
             <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">← Back</button><button class="nav-btn" onclick="nextPage(10)">Next Page →</button></div>
         </div>
@@ -369,37 +369,4 @@
         function startRoute(route) {
             document.getElementById('selection-container').style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('selection-container').style.display = 'none';
-                var bookContainer = document.getElementById('book-container');
-                bookContainer.style.display = 'block';
-                bookContainer.style.opacity = '1';
-                if(route === 'A') {
-                    var a = document.getElementById("myAudio"); a.volume = 0.05; a.play();
-                    document.getElementById('p1').classList.add('active-page');
-                } else {
-                    var b = document.getElementById("routeBAudio"); b.volume = 0.15; b.play();
-                    document.getElementById('p7').classList.add('active-page');
-                }
-            }, 800);
-        }
-
-        function nextPage(num) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById('p' + num).classList.add('active-page');
-        }
-
-        function showFinalScene() {
-            document.getElementById('book-container').style.opacity = '0';
-            document.getElementById('finalScene').style.opacity = '1';
-            setTimeout(() => {
-                document.getElementById('book-container').style.display = 'none';
-                var btn = document.getElementById('return-home');
-                btn.style.display = 'block';
-                setTimeout(() => { btn.style.opacity = '1'; }, 100);
-            }, 1500);
-        }
-
-        function resetToHome() { location.reload(); }
-    </script>
-</body>
-</html>
+                document.
