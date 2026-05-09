@@ -36,13 +36,14 @@
             width: 100%;
             max-height: 80px;
             background: rgba(0, 0, 0, 0.8);
-            color: #0f0;
+            color: #ffb6c1;
             font-family: monospace;
             font-size: 10px;
             padding: 5px;
             z-index: 9999;
             overflow-y: auto;
             pointer-events: none;
+            border-top: 1px solid var(--terminal-border);
         }
 
         .final-scene {
@@ -104,6 +105,7 @@
             font-weight: 600;
             margin-top: 40px;
             text-transform: uppercase;
+            z-index: 100;
         }
 
         #selection-container, #book-container {
@@ -131,16 +133,14 @@
 
         .nav-btns { margin-top: 25px; display: flex; justify-content: center; gap: 15px; }
         .nav-btn { background: none; border: 1px solid rgba(179, 168, 179, 0.4); color: var(--text-sub); cursor: pointer; padding: 10px 20px; border-radius: 25px; text-transform: uppercase; font-size: 0.8rem; }
-
-        @media (max-width: 600px) { .book-title { font-size: 3rem; } }
     </style>
 </head>
 <body>
 
-    <div id="debug-log">Log: Site Ready.</div>
+    <div id="debug-log">Debug Log: Site Initialized. Waiting for input...</div>
 
-    <audio id="myAudio" loop preload="auto"><source src="raindrops.mp4" type="audio/mp4"></audio>
-    <audio id="routeBAudio" loop preload="auto"><source src="feeling.mp3" type="audio/mpeg"></audio>
+    <audio id="audioA" loop preload="auto"><source src="raindrops.mp4" type="audio/mp4"></audio>
+    <audio id="audioB" loop preload="auto"><source src="feeling.mp3" type="audio/mpeg"></audio>
 
     <div class="final-scene" id="finalScene">
         <img id="finalImg" src="image_f3b00c.png" alt="Together">
@@ -172,6 +172,7 @@
             <p>I'm grateful to be in your corner, Tonii.</p>
             <div class="nav-btns"><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
         </div>
+
         <div class="page" id="p7">
             <h2>01. Reconnecting</h2>
             <p>Hearing you say you had <b>no bad feelings</b> meant everything ✨.</p>
@@ -186,35 +187,37 @@
 
     <script>
         const dbg = document.getElementById('debug-log');
-        function log(m) { dbg.innerHTML += "<br>" + m; dbg.scrollTop = dbg.scrollHeight; }
-
-        window.onerror = (m) => log("❌ JS Error: " + m);
+        function log(m) { dbg.innerHTML += "<br>" + m; dbg.scrollTop = dbg.scrollHeight; console.log(m); }
 
         function startExperience() {
-            log("Opening Cover...");
-            document.getElementById('cover').style.opacity = '0';
+            log("Opening experience...");
+            const cover = document.getElementById('cover');
+            cover.style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('cover').style.display = 'none';
+                cover.style.display = 'none';
                 const s = document.getElementById('selection-container');
-                s.style.display = 'block'; setTimeout(() => s.style.opacity = '1', 50);
+                s.style.display = 'block'; 
+                setTimeout(() => { s.style.opacity = '1'; }, 50);
                 document.getElementById('rainCanvas').style.opacity = '1';
                 initRain();
             }, 1000);
         }
 
         function startRoute(r) {
-            log("Route " + r + " picked.");
+            log("Route " + r + " selected.");
             document.getElementById('selection-container').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('selection-container').style.display = 'none';
                 const b = document.getElementById('book-container');
-                b.style.display = 'block'; setTimeout(() => b.style.opacity = '1', 50);
+                b.style.display = 'block'; 
+                setTimeout(() => { b.style.opacity = '1'; }, 50);
+                
                 if(r === 'A') {
                     document.getElementById('p1').classList.add('active-page');
-                    document.getElementById('myAudio').play().catch(() => log("⚠️ Audio Blocked"));
+                    document.getElementById('audioA').play().catch(e => log("⚠️ Audio A blocked"));
                 } else {
                     document.getElementById('p7').classList.add('active-page');
-                    document.getElementById('routeBAudio').play().catch(() => log("⚠️ Audio Blocked"));
+                    document.getElementById('audioB').play().catch(e => log("⚠️ Audio B blocked"));
                 }
             }, 800);
         }
