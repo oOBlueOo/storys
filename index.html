@@ -30,6 +30,23 @@
             overscroll-behavior: none; 
         }
 
+        /* DEBUG CONSOLE STYLING */
+        #debug-log {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-height: 100px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #0f0;
+            font-family: monospace;
+            font-size: 10px;
+            padding: 5px;
+            z-index: 9999;
+            overflow-y: scroll;
+            pointer-events: none;
+        }
+
         .final-scene {
             position: fixed;
             top: 0; left: 0;
@@ -42,8 +59,7 @@
         }
 
         .final-scene img {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
             object-position: center;
             filter: brightness(0.7) sepia(0.2) hue-rotate(-10deg); 
@@ -51,7 +67,7 @@
 
         #return-home {
             position: fixed;
-            bottom: 40px;
+            bottom: 110px; /* Moved up to clear debug log */
             z-index: 20;
             background: none;
             border: none;
@@ -60,7 +76,7 @@
             cursor: pointer;
             opacity: 0;
             display: none;
-            transition: opacity 2s ease, transform 0.3s ease;
+            transition: opacity 2s ease;
             text-shadow: 0 0 20px rgba(255, 182, 193, 0.8);
         }
 
@@ -94,14 +110,11 @@
 
         .book-title {
             font-family: 'Dancing Script', cursive;
-            font-size: 4.8rem;
+            font-size: 4rem;
             color: var(--cute-accent);
             margin: 0;
-            text-shadow: 0 0 25px rgba(255, 182, 193, 0.4);
             line-height: 1.1;
         }
-
-        .subtitle { color: var(--text-sub); letter-spacing: 4px; margin-top: 15px; font-size: 0.8rem; text-transform: uppercase; font-weight: 600; }
 
         .open-btn, .route-btn {
             background: transparent;
@@ -112,40 +125,18 @@
             cursor: pointer;
             font-weight: 600;
             margin-top: 40px;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            transition: all 0.4s ease;
             text-transform: uppercase;
         }
 
-        .open-btn:hover, .route-btn:hover { background: var(--cute-accent); color: #000; box-shadow: 0 0 25px rgba(255, 182, 193, 0.6); }
-
-        #selection-container {
+        #selection-container, #book-container {
             display: none;
             position: relative;
             z-index: 10; 
             width: 85%;
-            max-width: 400px;
+            max-width: 500px;
             text-align: center;
             background: var(--bg-terminal);
             padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--terminal-border);
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-
-        #book-container {
-            display: none;
-            position: relative;
-            z-index: 10; 
-            width: 85%;
-            max-width: 550px;
-            text-align: center;
-            background: var(--bg-terminal);
-            padding: 45px;
             border-radius: 20px;
             backdrop-filter: blur(8px);
             border: 1px solid var(--terminal-border);
@@ -158,27 +149,25 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         h2 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--cute-accent); margin-bottom: 12px; }
-        p { line-height: 1.7; font-size: 1.15rem; color: var(--text-main); margin-bottom: 15px; }
-        b { color: var(--cute-accent); }
+        p { line-height: 1.7; font-size: 1.1rem; color: var(--text-main); margin-bottom: 15px; }
 
         .nav-btns { margin-top: 25px; display: flex; justify-content: center; gap: 15px; }
-        .nav-btn { background: none; border: 1px solid rgba(179, 168, 179, 0.4); color: var(--text-sub); cursor: pointer; padding: 10px 28px; border-radius: 25px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; transition: 0.3s; }
-        .nav-btn:hover { color: var(--cute-accent); border-color: var(--cute-accent); }
+        .nav-btn { background: none; border: 1px solid rgba(179, 168, 179, 0.4); color: var(--text-sub); cursor: pointer; padding: 10px 28px; border-radius: 25px; text-transform: uppercase; font-weight: 600; }
 
         @media (max-width: 600px) {
-            .book-title { font-size: 3.5rem; }
-            #book-container, #selection-container { width: 90%; padding: 25px 20px; }
-            h2 { font-size: 2.2rem; }
+            .book-title { font-size: 3rem; }
         }
     </style>
 </head>
 <body>
 
-    <audio id="myAudio" loop preload="auto"><source src="raindrops.mp4" type="audio/mp4"></audio>
-    <audio id="routeBAudio" loop preload="auto"><source src="feeling.mp3" type="audio/mpeg"></audio>
+    <div id="debug-log">Log: Site Initialized...<br></div>
+
+    <audio id="myAudio" loop><source src="raindrops.mp4" type="audio/mp4"></audio>
+    <audio id="routeBAudio" loop><source src="feeling.mp3" type="audio/mpeg"></audio>
 
     <div class="final-scene" id="finalScene">
-        <img src="image_f3b00c.png" alt="Together">
+        <img id="finalImg" src="image_f3b00c.png" alt="Together">
     </div>
 
     <button id="return-home" onclick="location.reload()">❤️</button>
@@ -187,85 +176,51 @@
     <div id="cover">
         <div class="heart">💖</div>
         <h1 class="book-title">Tonii & Ronnie</h1>
-        <p class="subtitle">Just a quiet little story</p>
         <button class="open-btn" onclick="startExperience()">Open Our Story</button>
     </div>
 
     <div id="selection-container">
         <h2>Choose a Path</h2>
-        <p>Which chapter do you want to read tonight?</p>
-        <button class="route-btn" style="width:100%; margin-top:20px;" onclick="startRoute('A')">The Journey So Far</button>
+        <button class="route-btn" style="width:100%;" onclick="startRoute('A')">The Journey So Far</button>
         <button class="route-btn" style="width:100%; margin-top:10px;" onclick="startRoute('B')">The Recent Chapters</button>
     </div>
 
     <div id="book-container">
         <div class="page" id="p1">
-            <h2>01. New Addington</h2>
-            <p>It started a long time ago in <b>New Addington</b>. Life was chaotic back then, but you were always a safe space. You made sure I was fed, looked after <b>Snowey</b>, and always showed up for our meet-ups.</p>
+            <h2>01. History</h2>
+            <p>It started a long time ago in <b>New Addington</b>. You were the anchor I didn't know I needed.</p>
             <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">Next →</button></div>
         </div>
         <div class="page" id="p2">
-            <h2>02. Frozen Nights</h2>
-            <p>I still laugh thinking about freezing in the rain on that moped. But my favorite memories are the quiet ones. Endless nights watching <b>Prison Break</b> and <b>Ramsay's Kitchen Nightmares</b>.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(1)">← Back</button><button class="nav-btn" onclick="nextPage(3)">Next →</button></div>
-        </div>
-        <div class="page" id="p3">
-            <h2>03. The High Ground</h2>
-            <p>Remember the <b>Call of Duty Zombies</b> marathons? Surviving round after round on the phone until the sun came up. We were a team before we even knew how to be one in real life.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">← Back</button><button class="nav-btn" onclick="nextPage(4)">Next →</button></div>
-        </div>
-        <div class="page" id="p4">
-            <h2>04. The Keepsakes</h2>
-            <p>Finding out you kept those old <b>GHDs</b>—and that little heart with the <b>'R'</b> on your finger—made me smile. It was like a sign that the story wasn't quite over.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(3)">← Back</button><button class="nav-btn" onclick="nextPage(5)">Next →</button></div>
-        </div>
-        <div class="page" id="p5">
-            <h2>05. Growing Up</h2>
-            <p>Watching you break cycles for <b>Lucien</b> while I do the same for <b>Jayjay</b> and <b>Ryan</b> makes me so incredibly proud. We had to learn how to be parents on our own.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(4)">← Back</button><button class="nav-btn" onclick="nextPage(6)">Next →</button></div>
-        </div>
-        <div class="page" id="p6">
-            <h2>06. The Corner</h2>
-            <p>You’re an absolute ray of sunshine, Tonii. No matter how much time passes, I’m just grateful to be in your corner, whenever you need a friend.</p>
-            <p style="font-family: 'Dancing Script'; font-size: 2rem; color: var(--cute-accent);">Ronnie x</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(5)">← Back</button><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
+            <h2>02. Finish</h2>
+            <p>I'm grateful to be in your corner, Tonii.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
         </div>
 
         <div class="page" id="p7">
             <h2>01. Reconnecting</h2>
-            <p>When I sent that message in April, I expected nothing back. I just wanted to say I was genuinely sorry for the person I used to be.</p>
-            <p>But then you replied. Hearing you say you had <b>no bad feelings</b> and wishing me nothing but healing ✨ was a weight off my shoulders.</p>
+            <p>Hearing you say you had <b>no bad feelings</b> meant everything ✨.</p>
             <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">Next →</button></div>
         </div>
         <div class="page" id="p8">
-            <h2>02. 20:52 PM</h2>
-            <p>I remember what I told you. I work hard and I treat my kids good. I want to do everything just to <b>make you smile</b>. Trust me when I say I do it as much for me as I do for you.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(7)">← Back</button><button class="nav-btn" onclick="nextPage(9)">Next →</button></div>
-        </div>
-        <div class="page" id="p9">
-            <h2>03. Taking Care</h2>
-            <p>I love being in a position where I can look after you. Sending you that money for your food made me feel good—knowing you were taken care of while you were out meant everything.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">← Back</button><button class="nav-btn" onclick="nextPage(10)">Next →</button></div>
-        </div>
-        <div class="page" id="p10">
-            <h2>04. Relief</h2>
-            <p>I was so glad when the delivery for <b>your son's new clothes</b> finally came through. Seeing you relieved and able to go to bed happy was the best news I had all week.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(9)">← Back</button><button class="nav-btn" onclick="nextPage(11)">Next →</button></div>
-        </div>
-        <div class="page" id="p11">
-            <h2>05. The Clause</h2>
-            <p>The <b>"No Apologies"</b> rule is now law. If you break it, you have to pick a completely random emoji and send it with zero context. I'm ready for the chaos.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(10)">← Back</button><button class="nav-btn" onclick="nextPage(12)">Next →</button></div>
-        </div>
-        <div class="page" id="p12">
-            <h2>06. No Pressure</h2>
-            <p>I love the peace we have now. No pressure, no expectations. Just sharing TikToks and knowing we're there for each other. You know I'll never miss a message.</p>
-            <p style="font-family: 'Dancing Script'; font-size: 2rem; color: var(--cute-accent);">Ronnie x</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(11)">← Back</button><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
+            <h2>02. Finish</h2>
+            <p>Let's just keep this good energy going.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
         </div>
     </div>
 
     <script>
+        const log = document.getElementById('debug-log');
+        function debug(msg) { log.innerHTML += msg + "<br>"; log.scrollTop = log.scrollHeight; }
+
+        // Audio Debugging
+        document.getElementById('myAudio').addEventListener('error', () => debug("❌ ERROR: raindrops.mp4 FAILED TO LOAD"));
+        document.getElementById('myAudio').addEventListener('canplaythrough', () => debug("✅ SUCCESS: raindrops.mp4 READY"));
+        document.getElementById('routeBAudio').addEventListener('error', () => debug("❌ ERROR: feeling.mp3 FAILED TO LOAD"));
+        document.getElementById('routeBAudio').addEventListener('canplaythrough', () => debug("✅ SUCCESS: feeling.mp3 READY"));
+        document.getElementById('finalImg').addEventListener('error', () => debug("❌ ERROR: image_f3b00c.png FAILED TO LOAD"));
+        document.getElementById('finalImg').addEventListener('load', () => debug("✅ SUCCESS: image_f3b00c.png READY"));
+
         const canvas = document.getElementById('rainCanvas');
         const ctx = canvas.getContext('2d');
         let width, height, raindrops = [];
@@ -282,26 +237,30 @@
         function animate() { ctx.clearRect(0, 0, width, height); raindrops.forEach(d => d.fall()); requestAnimationFrame(animate); }
 
         function startExperience() {
+            debug("Button Clicked: Starting Experience...");
             document.getElementById('cover').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('cover').style.display = 'none';
                 const sel = document.getElementById('selection-container');
-                sel.style.display = 'block'; setTimeout(() => sel.style.opacity = '1', 50);
+                sel.style.display = 'block'; 
+                setTimeout(() => { sel.style.opacity = '1'; debug("Selection Menu Visible."); }, 50);
                 canvas.style.opacity = '1'; animate();
             }, 1000);
         }
 
         function startRoute(route) {
+            debug("Route " + route + " selected.");
             document.getElementById('selection-container').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('selection-container').style.display = 'none';
                 const book = document.getElementById('book-container');
-                book.style.display = 'block'; setTimeout(() => book.style.opacity = '1', 50);
+                book.style.display = 'block'; 
+                setTimeout(() => { book.style.opacity = '1'; debug("Book Container Visible."); }, 50);
                 if(route === 'A') { 
-                    const a = document.getElementById("myAudio"); a.volume = 0.1; a.play().catch(() => {});
+                    document.getElementById("myAudio").play().catch(e => debug("⚠️ Audio Blocked by Browser"));
                     document.getElementById('p1').classList.add('active-page');
                 } else { 
-                    const b = document.getElementById("routeBAudio"); b.volume = 0.2; b.play().catch(() => {});
+                    document.getElementById("routeBAudio").play().catch(e => debug("⚠️ Audio Blocked by Browser"));
                     document.getElementById('p7').classList.add('active-page');
                 }
             }, 800);
@@ -310,15 +269,18 @@
         function nextPage(num) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById('p' + num).classList.add('active-page');
+            debug("Moved to page " + num);
         }
 
         function showFinalScene() {
+            debug("Showing Final Scene...");
             document.getElementById('book-container').style.opacity = '0';
             document.getElementById('finalScene').style.opacity = '1';
             setTimeout(() => {
                 document.getElementById('book-container').style.display = 'none';
                 const btn = document.getElementById('return-home');
-                btn.style.display = 'block'; setTimeout(() => btn.style.opacity = '1', 100);
+                btn.style.display = 'block'; 
+                setTimeout(() => btn.style.opacity = '1', 100);
             }, 1500);
         }
     </script>
