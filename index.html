@@ -30,20 +30,18 @@
             overscroll-behavior: none; 
         }
 
-        /* DEBUG CONSOLE STYLING */
         #debug-log {
             position: fixed;
-            bottom: 0;
-            left: 0;
+            bottom: 0; left: 0;
             width: 100%;
-            max-height: 100px;
+            max-height: 80px;
             background: rgba(0, 0, 0, 0.8);
             color: #0f0;
             font-family: monospace;
             font-size: 10px;
             padding: 5px;
             z-index: 9999;
-            overflow-y: scroll;
+            overflow-y: auto;
             pointer-events: none;
         }
 
@@ -58,16 +56,11 @@
             background-color: #000;
         }
 
-        .final-scene img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            object-position: center;
-            filter: brightness(0.7) sepia(0.2) hue-rotate(-10deg); 
-        }
+        .final-scene img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7) sepia(0.2); }
 
         #return-home {
             position: fixed;
-            bottom: 110px; /* Moved up to clear debug log */
+            bottom: 100px;
             z-index: 20;
             background: none;
             border: none;
@@ -77,18 +70,9 @@
             opacity: 0;
             display: none;
             transition: opacity 2s ease;
-            text-shadow: 0 0 20px rgba(255, 182, 193, 0.8);
         }
 
-        #rainCanvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 2; 
-            opacity: 0; 
-            transition: opacity 2s ease-in-out;
-            pointer-events: none;
-        }
+        #rainCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; opacity: 0; transition: opacity 2s ease; pointer-events: none; }
 
         #cover {
             position: absolute;
@@ -108,13 +92,7 @@
         .heart { color: var(--cute-accent); font-size: 3.2rem; margin-bottom: 15px; animation: float 4s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        .book-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 4rem;
-            color: var(--cute-accent);
-            margin: 0;
-            line-height: 1.1;
-        }
+        .book-title { font-family: 'Dancing Script', cursive; font-size: 4rem; color: var(--cute-accent); margin: 0; }
 
         .open-btn, .route-btn {
             background: transparent;
@@ -148,23 +126,21 @@
         .active-page { display: flex; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--cute-accent); margin-bottom: 12px; }
+        h2 { font-family: 'Dancing Script', cursive; font-size: 2.8rem; color: var(--cute-accent); margin-bottom: 12px; }
         p { line-height: 1.7; font-size: 1.1rem; color: var(--text-main); margin-bottom: 15px; }
 
         .nav-btns { margin-top: 25px; display: flex; justify-content: center; gap: 15px; }
-        .nav-btn { background: none; border: 1px solid rgba(179, 168, 179, 0.4); color: var(--text-sub); cursor: pointer; padding: 10px 28px; border-radius: 25px; text-transform: uppercase; font-weight: 600; }
+        .nav-btn { background: none; border: 1px solid rgba(179, 168, 179, 0.4); color: var(--text-sub); cursor: pointer; padding: 10px 20px; border-radius: 25px; text-transform: uppercase; font-size: 0.8rem; }
 
-        @media (max-width: 600px) {
-            .book-title { font-size: 3rem; }
-        }
+        @media (max-width: 600px) { .book-title { font-size: 3rem; } }
     </style>
 </head>
 <body>
 
-    <div id="debug-log">Log: Site Initialized...<br></div>
+    <div id="debug-log">Log: Site Ready.</div>
 
-    <audio id="myAudio" loop><source src="raindrops.mp4" type="audio/mp4"></audio>
-    <audio id="routeBAudio" loop><source src="feeling.mp3" type="audio/mpeg"></audio>
+    <audio id="myAudio" loop preload="auto"><source src="raindrops.mp4" type="audio/mp4"></audio>
+    <audio id="routeBAudio" loop preload="auto"><source src="feeling.mp3" type="audio/mpeg"></audio>
 
     <div class="final-scene" id="finalScene">
         <img id="finalImg" src="image_f3b00c.png" alt="Together">
@@ -196,7 +172,6 @@
             <p>I'm grateful to be in your corner, Tonii.</p>
             <div class="nav-btns"><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
         </div>
-
         <div class="page" id="p7">
             <h2>01. Reconnecting</h2>
             <p>Hearing you say you had <b>no bad feelings</b> meant everything ✨.</p>
@@ -210,78 +185,64 @@
     </div>
 
     <script>
-        const log = document.getElementById('debug-log');
-        function debug(msg) { log.innerHTML += msg + "<br>"; log.scrollTop = log.scrollHeight; }
+        const dbg = document.getElementById('debug-log');
+        function log(m) { dbg.innerHTML += "<br>" + m; dbg.scrollTop = dbg.scrollHeight; }
 
-        // Audio Debugging
-        document.getElementById('myAudio').addEventListener('error', () => debug("❌ ERROR: raindrops.mp4 FAILED TO LOAD"));
-        document.getElementById('myAudio').addEventListener('canplaythrough', () => debug("✅ SUCCESS: raindrops.mp4 READY"));
-        document.getElementById('routeBAudio').addEventListener('error', () => debug("❌ ERROR: feeling.mp3 FAILED TO LOAD"));
-        document.getElementById('routeBAudio').addEventListener('canplaythrough', () => debug("✅ SUCCESS: feeling.mp3 READY"));
-        document.getElementById('finalImg').addEventListener('error', () => debug("❌ ERROR: image_f3b00c.png FAILED TO LOAD"));
-        document.getElementById('finalImg').addEventListener('load', () => debug("✅ SUCCESS: image_f3b00c.png READY"));
-
-        const canvas = document.getElementById('rainCanvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, raindrops = [];
-
-        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
-
-        class Drop {
-            constructor() { this.x = Math.random() * width; this.y = Math.random() * height; this.speed = Math.random() * 2 + 2; this.len = Math.random() * 15 + 10; }
-            fall() { this.y += this.speed; if (this.y > height) { this.y = -20; this.x = Math.random() * width; }
-                ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x, this.y + this.len); ctx.strokeStyle = 'rgba(255, 182, 193, 0.2)'; ctx.stroke(); }
-        }
-        for (let i = 0; i < 70; i++) raindrops.push(new Drop());
-        function animate() { ctx.clearRect(0, 0, width, height); raindrops.forEach(d => d.fall()); requestAnimationFrame(animate); }
+        window.onerror = (m) => log("❌ JS Error: " + m);
 
         function startExperience() {
-            debug("Button Clicked: Starting Experience...");
+            log("Opening Cover...");
             document.getElementById('cover').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('cover').style.display = 'none';
-                const sel = document.getElementById('selection-container');
-                sel.style.display = 'block'; 
-                setTimeout(() => { sel.style.opacity = '1'; debug("Selection Menu Visible."); }, 50);
-                canvas.style.opacity = '1'; animate();
+                const s = document.getElementById('selection-container');
+                s.style.display = 'block'; setTimeout(() => s.style.opacity = '1', 50);
+                document.getElementById('rainCanvas').style.opacity = '1';
+                initRain();
             }, 1000);
         }
 
-        function startRoute(route) {
-            debug("Route " + route + " selected.");
+        function startRoute(r) {
+            log("Route " + r + " picked.");
             document.getElementById('selection-container').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('selection-container').style.display = 'none';
-                const book = document.getElementById('book-container');
-                book.style.display = 'block'; 
-                setTimeout(() => { book.style.opacity = '1'; debug("Book Container Visible."); }, 50);
-                if(route === 'A') { 
-                    document.getElementById("myAudio").play().catch(e => debug("⚠️ Audio Blocked by Browser"));
+                const b = document.getElementById('book-container');
+                b.style.display = 'block'; setTimeout(() => b.style.opacity = '1', 50);
+                if(r === 'A') {
                     document.getElementById('p1').classList.add('active-page');
-                } else { 
-                    document.getElementById("routeBAudio").play().catch(e => debug("⚠️ Audio Blocked by Browser"));
+                    document.getElementById('myAudio').play().catch(() => log("⚠️ Audio Blocked"));
+                } else {
                     document.getElementById('p7').classList.add('active-page');
+                    document.getElementById('routeBAudio').play().catch(() => log("⚠️ Audio Blocked"));
                 }
             }, 800);
         }
 
-        function nextPage(num) {
+        function nextPage(n) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById('p' + num).classList.add('active-page');
-            debug("Moved to page " + num);
+            document.getElementById('p' + n).classList.add('active-page');
         }
 
         function showFinalScene() {
-            debug("Showing Final Scene...");
             document.getElementById('book-container').style.opacity = '0';
             document.getElementById('finalScene').style.opacity = '1';
             setTimeout(() => {
                 document.getElementById('book-container').style.display = 'none';
-                const btn = document.getElementById('return-home');
-                btn.style.display = 'block'; 
-                setTimeout(() => btn.style.opacity = '1', 100);
+                const h = document.getElementById('return-home');
+                h.style.display = 'block'; setTimeout(() => h.style.opacity = '1', 100);
             }, 1500);
+        }
+
+        function initRain() {
+            const c = document.getElementById('rainCanvas'); const x = c.getContext('2d');
+            let w = c.width = window.innerWidth; let h = c.height = window.innerHeight;
+            let ds = [];
+            for(let i=0; i<70; i++) ds.push({x:Math.random()*w, y:Math.random()*h, s:Math.random()*2+2, l:Math.random()*15+10});
+            function anim() { x.clearRect(0,0,w,h); x.strokeStyle='rgba(255,182,193,0.2)'; 
+                ds.forEach(d => { d.y+=d.s; if(d.y>h) d.y=-20; x.beginPath(); x.moveTo(d.x, d.y); x.lineTo(d.x, d.y+d.l); x.stroke(); });
+                requestAnimationFrame(anim); }
+            anim();
         }
     </script>
 </body>
