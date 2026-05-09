@@ -64,8 +64,6 @@
             text-shadow: 0 0 20px rgba(255, 182, 193, 0.8);
         }
 
-        #return-home:hover { transform: scale(1.2); }
-
         #rainCanvas {
             position: absolute;
             top: 0; left: 0;
@@ -86,7 +84,7 @@
             text-align: center;
             width: 100%; height: 100%;
             background: radial-gradient(circle, var(--bg-cover) 0%, #100e12 100%);
-            transition: opacity 1.5s ease;
+            transition: opacity 1s ease;
             padding: 20px;
             box-sizing: border-box;
         }
@@ -118,14 +116,10 @@
             font-size: 1rem;
             letter-spacing: 1px;
             transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
             text-transform: uppercase;
         }
 
         .open-btn:hover, .route-btn:hover { background: var(--cute-accent); color: #000; box-shadow: 0 0 25px rgba(255, 182, 193, 0.6); }
-
-        .route-btn { margin-top: 15px; display: block; width: 100%; padding: 12px 20px; font-size: 0.9rem;}
 
         #selection-container {
             display: none;
@@ -139,16 +133,14 @@
             border-radius: 20px;
             backdrop-filter: blur(8px);
             border: 1px solid var(--terminal-border);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            transition: opacity 1s ease; 
-            box-sizing: border-box;
             opacity: 0;
+            transition: opacity 1s ease;
         }
 
         #book-container {
             display: none;
             position: relative;
-            z-index: 5; 
+            z-index: 10; 
             width: 85%;
             max-width: 550px;
             text-align: center;
@@ -157,54 +149,39 @@
             border-radius: 20px;
             backdrop-filter: blur(8px);
             border: 1px solid var(--terminal-border);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            transition: opacity 1.5s ease; 
-            box-sizing: border-box;
             opacity: 0;
+            transition: opacity 1s ease;
         }
 
-        .page {
-            display: none;
-            flex-direction: column;
-            animation: slideUp 0.8s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
-            position: relative; 
-            z-index: 10; 
-        }
-
+        .page { display: none; flex-direction: column; animation: slideUp 0.8s ease forwards; }
         .active-page { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-
-        h2 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--cute-accent); margin-bottom: 12px; font-weight: normal; text-shadow: 0 0 10px rgba(255, 182, 193, 0.3); }
-        p { line-height: 1.7; font-size: 1.15rem; color: var(--text-main); font-weight: 300; margin-bottom: 15px; }
-        b { color: var(--cute-accent); font-weight: 600; text-shadow: 0 0 5px rgba(255, 182, 193, 0.2); }
+        h2 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: var(--cute-accent); margin-bottom: 12px; }
+        p { line-height: 1.7; font-size: 1.15rem; color: var(--text-main); margin-bottom: 15px; }
+        b { color: var(--cute-accent); }
 
         .nav-btns { margin-top: 25px; display: flex; justify-content: center; gap: 15px; }
-        .nav-btn { background: none; border: 1px solid rgba(179, 168, 179, 0.4); color: var(--text-sub); cursor: pointer; padding: 10px 28px; border-radius: 25px; font-family: 'Quicksand', sans-serif; font-size: 0.9rem; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
-        .nav-btn:hover { color: var(--cute-accent); border-color: var(--cute-accent); background: rgba(255, 182, 193, 0.1);}
+        .nav-btn { background: none; border: 1px solid rgba(179, 168, 179, 0.4); color: var(--text-sub); cursor: pointer; padding: 10px 28px; border-radius: 25px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; transition: 0.3s; }
+        .nav-btn:hover { color: var(--cute-accent); border-color: var(--cute-accent); }
 
         @media (max-width: 600px) {
             .book-title { font-size: 3.5rem; }
             #book-container, #selection-container { width: 90%; padding: 25px 20px; }
             h2 { font-size: 2.2rem; }
-            p { font-size: 1rem; }
-            #return-home { bottom: 20px; font-size: 3rem; }
         }
     </style>
 </head>
 <body>
 
-    <audio id="myAudio" loop><source src="raindrops.mp4" type="audio/mp4"></audio>
-    <audio id="routeBAudio" loop><source src="feeling.mp3" type="audio/mpeg"></audio>
+    <audio id="myAudio" loop preload="auto"><source src="raindrops.mp4" type="audio/mp4"></audio>
+    <audio id="routeBAudio" loop preload="auto"><source src="feeling.mp3" type="audio/mpeg"></audio>
 
     <div class="final-scene" id="finalScene">
-        <img src="image_f3b00c.png" alt="Cuddling in the rain">
+        <img src="image_f3b00c.png" alt="Together">
     </div>
 
-    <button id="return-home" onclick="resetToHome()">❤️</button>
-
+    <button id="return-home" onclick="location.reload()">❤️</button>
     <canvas id="rainCanvas"></canvas>
 
     <div id="cover">
@@ -216,95 +193,74 @@
 
     <div id="selection-container">
         <h2>Choose a Path</h2>
-        <p style="font-size: 0.95rem; margin-bottom: 25px;">Which chapter do you want to read tonight?</p>
-        <button class="route-btn" onclick="startRoute('A')">The Journey So Far</button>
-        <button class="route-btn" onclick="startRoute('B')">The Recent Chapters</button>
+        <p>Which chapter do you want to read tonight?</p>
+        <button class="route-btn" style="width:100%; margin-top:20px;" onclick="startRoute('A')">The Journey So Far</button>
+        <button class="route-btn" style="width:100%; margin-top:10px;" onclick="startRoute('B')">The Recent Chapters</button>
     </div>
 
     <div id="book-container">
         <div class="page" id="p1">
             <h2>01. New Addington</h2>
             <p>It started a long time ago in <b>New Addington</b>. Life was chaotic back then, but you were always a safe space. You made sure I was fed, looked after <b>Snowey</b>, and always showed up for our meet-ups.</p>
-            <p>You were there for me even when I was lying—and you absolutely knew I was. You were the anchor I didn't know I needed.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">Next Page →</button></div>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">Next →</button></div>
         </div>
-
         <div class="page" id="p2">
             <h2>02. Frozen Nights</h2>
             <p>I still laugh thinking about freezing in the rain on that moped. But my favorite memories are the quiet ones. Endless nights watching <b>Prison Break</b> and <b>Ramsay's Kitchen Nightmares</b>.</p>
-            <p>Just standing there, looking in the mirror together. Those simple moments meant the world to me then, and they mean even more now.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(1)">← Back</button><button class="nav-btn" onclick="nextPage(3)">Next Page →</button></div>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(1)">← Back</button><button class="nav-btn" onclick="nextPage(3)">Next →</button></div>
         </div>
-
         <div class="page" id="p3">
             <h2>03. The High Ground</h2>
             <p>Remember the <b>Call of Duty Zombies</b> marathons? Surviving round after round on the phone until the sun came up. We were a team before we even knew how to be one in real life.</p>
-            <p>Even when the world felt heavy, those games and those calls were a little bubble where everything felt okay.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">← Back</button><button class="nav-btn" onclick="nextPage(4)">Next Page →</button></div>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">← Back</button><button class="nav-btn" onclick="nextPage(4)">Next →</button></div>
         </div>
-
         <div class="page" id="p4">
             <h2>04. The Keepsakes</h2>
             <p>Finding out you kept those old <b>GHDs</b>—and that little heart with the <b>'R'</b> on your finger—made me smile. It was like a sign that the story wasn't quite over.</p>
-            <p>It showed me that even when we were walking different paths, a piece of us stayed behind. I’ve never forgotten that.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(3)">← Back</button><button class="nav-btn" onclick="nextPage(5)">Next Page →</button></div>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(3)">← Back</button><button class="nav-btn" onclick="nextPage(5)">Next →</button></div>
         </div>
-
         <div class="page" id="p5">
             <h2>05. Growing Up</h2>
             <p>Watching you break cycles for <b>Lucien</b> while I do the same for <b>Jayjay</b> and <b>Ryan</b> makes me so incredibly proud. We had to learn how to be parents on our own.</p>
-            <p>We grew up, we changed, and we learned that being an anchor for someone else is the most important job we’ll ever have.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(4)">← Back</button><button class="nav-btn" onclick="nextPage(6)">Next Page →</button></div>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(4)">← Back</button><button class="nav-btn" onclick="nextPage(6)">Next →</button></div>
         </div>
-
         <div class="page" id="p6">
             <h2>06. The Corner</h2>
             <p>You’re an absolute ray of sunshine, Tonii. No matter how much time passes, I’m just grateful to be in your corner, whenever you need a friend.</p>
-            <p>Thank you for being part of my history, and for letting me be part of yours.</p>
-            <p style="font-family: 'Dancing Script'; font-size: 2rem; color: var(--cute-accent); margin-top: 10px;">Ronnie x</p>
+            <p style="font-family: 'Dancing Script'; font-size: 2rem; color: var(--cute-accent);">Ronnie x</p>
             <div class="nav-btns"><button class="nav-btn" onclick="nextPage(5)">← Back</button><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
         </div>
 
         <div class="page" id="p7">
             <h2>01. Reconnecting</h2>
             <p>When I sent that message in April, I expected nothing back. I just wanted to say I was genuinely sorry for the person I used to be.</p>
-            <p>But then you replied. Hearing you say you had <b>no bad feelings</b> and wished me nothing but healing ✨ was a weight off my shoulders I didn't know I was carrying.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">Next Page →</button></div>
+            <p>But then you replied. Hearing you say you had <b>no bad feelings</b> and wishing me nothing but healing ✨ was a weight off my shoulders.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">Next →</button></div>
         </div>
-
         <div class="page" id="p8">
             <h2>02. 20:52 PM</h2>
-            <p>I remember what I told you. I work hard and I treat my kids good. I want to do everything just to <b>make you smile</b>.</p>
-            <p>I do it as much for me as I do for you, because seeing you happy is the best thing about my day. It’s a peace I don’t want to lose.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(7)">← Back</button><button class="nav-btn" onclick="nextPage(9)">Next Page →</button></div>
+            <p>I remember what I told you. I work hard and I treat my kids good. I want to do everything just to <b>make you smile</b>. Trust me when I say I do it as much for me as I do for you.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(7)">← Back</button><button class="nav-btn" onclick="nextPage(9)">Next →</button></div>
         </div>
-
         <div class="page" id="p9">
             <h2>03. Taking Care</h2>
-            <p>I love being in a position where I can look after you. Sending you that money for your food made me feel good—it wasn't about the money, it was about knowing you were sorted.</p>
-            <p>Being able to provide and take that little bit of stress away is exactly why I work as hard as I do. I'll always have your back.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">← Back</button><button class="nav-btn" onclick="nextPage(10)">Next Page →</button></div>
+            <p>I love being in a position where I can look after you. Sending you that money for your food made me feel good—knowing you were taken care of while you were out meant everything.</p>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">← Back</button><button class="nav-btn" onclick="nextPage(10)">Next →</button></div>
         </div>
-
         <div class="page" id="p10">
             <h2>04. Relief</h2>
             <p>I was so glad when the delivery for <b>your son's new clothes</b> finally came through. Seeing you relieved and able to go to bed happy was the best news I had all week.</p>
-            <p>Your peace of mind is important to me. If the house is calm and you're sleeping well, then everything is going right.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(9)">← Back</button><button class="nav-btn" onclick="nextPage(11)">Next Page →</button></div>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(9)">← Back</button><button class="nav-btn" onclick="nextPage(11)">Next →</button></div>
         </div>
-
         <div class="page" id="p11">
             <h2>05. The Clause</h2>
             <p>The <b>"No Apologies"</b> rule is now law. If you break it, you have to pick a completely random emoji and send it with zero context. I'm ready for the chaos.</p>
-            <p>We've both done a lot of healing. It feels good to just be present, without any of the old weight hanging over us.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(10)">← Back</button><button class="nav-btn" onclick="nextPage(12)">Next Page →</button></div>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(10)">← Back</button><button class="nav-btn" onclick="nextPage(12)">Next →</button></div>
         </div>
-
         <div class="page" id="p12">
             <h2>06. No Pressure</h2>
-            <p>I love the peace we have now. No pressure, no expectations. Just sharing TikToks and knowing we're there for each other.</p>
-            <p>Thank you for letting me back in, Tonii. Let’s just keep this good energy going. You know I'll never miss a message.</p>
-            <p style="font-family: 'Dancing Script'; font-size: 2rem; color: var(--cute-accent); margin-top: 10px;">Ronnie x</p>
+            <p>I love the peace we have now. No pressure, no expectations. Just sharing TikToks and knowing we're there for each other. You know I'll never miss a message.</p>
+            <p style="font-family: 'Dancing Script'; font-size: 2rem; color: var(--cute-accent);">Ronnie x</p>
             <div class="nav-btns"><button class="nav-btn" onclick="nextPage(11)">← Back</button><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
         </div>
     </div>
@@ -312,57 +268,26 @@
     <script>
         const canvas = document.getElementById('rainCanvas');
         const ctx = canvas.getContext('2d');
-        let width, height;
-        let raindrops = [];
+        let width, height, raindrops = [];
 
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
 
         class Drop {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height - height;
-                this.speed = Math.random() * 2 + 1; 
-                this.length = Math.random() * 15 + 10;
-                this.opacity = Math.random() * 0.3 + 0.1; 
-            }
-            fall() {
-                this.y += this.speed;
-                if (this.y > height) {
-                    this.y = Math.random() * -100;
-                    this.x = Math.random() * width;
-                }
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x, this.y + this.length);
-                ctx.strokeStyle = `rgba(255, 182, 193, ${this.opacity})`; 
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
+            constructor() { this.x = Math.random() * width; this.y = Math.random() * height; this.speed = Math.random() * 2 + 2; this.len = Math.random() * 15 + 10; }
+            fall() { this.y += this.speed; if (this.y > height) { this.y = -20; this.x = Math.random() * width; }
+                ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x, this.y + this.len); ctx.strokeStyle = 'rgba(255, 182, 193, 0.2)'; ctx.stroke(); }
         }
-
-        for (let i = 0; i < 70; i++) { raindrops.push(new Drop()); }
-
-        function animateRain() {
-            ctx.clearRect(0, 0, width, height);
-            raindrops.forEach(drop => drop.fall());
-            requestAnimationFrame(animateRain);
-        }
+        for (let i = 0; i < 70; i++) raindrops.push(new Drop());
+        function animate() { ctx.clearRect(0, 0, width, height); raindrops.forEach(d => d.fall()); requestAnimationFrame(animate); }
 
         function startExperience() {
             document.getElementById('cover').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('cover').style.display = 'none';
-                var selectContainer = document.getElementById('selection-container');
-                selectContainer.style.display = 'block';
-                void selectContainer.offsetWidth; 
-                selectContainer.style.opacity = '1';
-                canvas.style.opacity = '1';
-                animateRain();
+                const sel = document.getElementById('selection-container');
+                sel.style.display = 'block'; setTimeout(() => sel.style.opacity = '1', 50);
+                canvas.style.opacity = '1'; animate();
             }, 1000);
         }
 
@@ -370,14 +295,13 @@
             document.getElementById('selection-container').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('selection-container').style.display = 'none';
-                var bookContainer = document.getElementById('book-container');
-                bookContainer.style.display = 'block';
-                bookContainer.style.opacity = '1';
-                if(route === 'A') {
-                    var a = document.getElementById("myAudio"); a.volume = 0.05; a.play();
+                const book = document.getElementById('book-container');
+                book.style.display = 'block'; setTimeout(() => book.style.opacity = '1', 50);
+                if(route === 'A') { 
+                    const a = document.getElementById("myAudio"); a.volume = 0.1; a.play().catch(() => {});
                     document.getElementById('p1').classList.add('active-page');
-                } else {
-                    var b = document.getElementById("routeBAudio"); b.volume = 0.15; b.play();
+                } else { 
+                    const b = document.getElementById("routeBAudio"); b.volume = 0.2; b.play().catch(() => {});
                     document.getElementById('p7').classList.add('active-page');
                 }
             }, 800);
@@ -393,13 +317,10 @@
             document.getElementById('finalScene').style.opacity = '1';
             setTimeout(() => {
                 document.getElementById('book-container').style.display = 'none';
-                var btn = document.getElementById('return-home');
-                btn.style.display = 'block';
-                setTimeout(() => { btn.style.opacity = '1'; }, 100);
+                const btn = document.getElementById('return-home');
+                btn.style.display = 'block'; setTimeout(() => btn.style.opacity = '1', 100);
             }, 1500);
         }
-
-        function resetToHome() { location.reload(); }
     </script>
 </body>
 </html>
