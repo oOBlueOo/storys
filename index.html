@@ -182,6 +182,85 @@
 
         #rainCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; opacity: 0; transition: opacity 2s ease; pointer-events: none; }
 
+        .our-song-player {
+            width: 100%;
+            max-width: 400px;
+            margin: 28px auto 12px;
+            filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.35));
+        }
+
+        .our-song-player audio { display: none; }
+
+        .our-song-controls {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(224, 161, 173, 0.35);
+        }
+
+        .our-song-play {
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--rose-gold);
+            background: linear-gradient(135deg, rgba(155, 27, 48, 0.35), rgba(224, 161, 173, 0.12));
+            color: var(--rose-gold);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .our-song-play:hover {
+            background: rgba(224, 161, 173, 0.25);
+            transform: scale(1.05);
+        }
+
+        .our-song-bar-wrap { flex: 1; min-width: 0; text-align: left; }
+
+        .our-song-seek {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(224, 161, 173, 0.2);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .our-song-seek::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--rose-gold);
+            box-shadow: 0 0 10px var(--glow);
+            cursor: pointer;
+        }
+
+        .our-song-seek::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--rose-gold);
+            border: none;
+            box-shadow: 0 0 10px var(--glow);
+            cursor: pointer;
+        }
+
+        .our-song-times {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+        }
+
         @media (max-width: 600px) {
             .book-title { font-size: 4rem; }
             #selection-container, #book-container { padding: 40px 20px; width: 92%; }
@@ -233,7 +312,7 @@
         </div>
         <div class="page" id="p2">
             <h2>02. Frozen Nights</h2>
-            <p>I still laugh thinking about freezing in the rain on that <b>moped</b>. But my favorite memories are the quiet ones. Endless nights watching <b>Prison Break</b> and <b>Ramsay's Kitchen Nightmares</b>.</p>
+            <p>I still laugh thinking about freezing in the rain on that <b>moped</b>. But my favorite memories are the quiet ones. Endless nights watching <b>Siren</b>.</p>
             <p>Just standing there, looking in the <b>mirror together</b>. Those simple moments meant the world to me then, and they mean even more now.</p>
             <div class="nav-btns"><button class="nav-btn" onclick="nextPage(1)">← Back</button><button class="nav-btn" onclick="nextPage(3)">Next →</button></div>
         </div>
@@ -296,7 +375,24 @@
             <h2>06. Energy</h2>
             <p>I love the <b>peace</b> we have now. No pressure, no expectations. Just sharing <b>TikToks</b> and knowing we're there for each other.</p>
             <p>Thank you for letting me back in, Tonii. Let’s just keep this <b>good energy</b> going. You know I'll never miss a message. <br><b>Ronnie x</b></p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(11)">← Back</button><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(11)">← Back</button><button class="nav-btn" onclick="nextPage(13)">Next →</button></div>
+        </div>
+
+        <div class="page" id="p13">
+            <h2>07. Our Song</h2>
+            <p>I made this track for <b>you</b> and for <b>this story</b>—something you can hit play on whenever you want it in the background.</p>
+            <p>No pressure, just us. <b>Tonii &amp; Ronnie</b></p>
+            <div class="our-song-player" id="ourSongPlayerWrap">
+                <audio id="ourSongAudio" preload="auto"><source src="OURSONG.mp3" type="audio/mpeg"></audio>
+                <div class="our-song-controls">
+                    <button type="button" class="our-song-play" id="ourSongPlayBtn" aria-label="Play or pause">▶</button>
+                    <div class="our-song-bar-wrap">
+                        <input type="range" id="ourSongSeek" class="our-song-seek" min="0" max="1000" value="0" aria-label="Seek">
+                        <div class="our-song-times"><span id="ourSongTimeCur">0:00</span><span id="ourSongTimeDur">--:--</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(12)">← Back</button><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
         </div>
     </div>
 
@@ -304,6 +400,136 @@
         const canvas = document.getElementById('rainCanvas');
         const ctx = canvas.getContext('2d');
         let width, height, raindrops = [];
+        let storyRoute = null;
+        let ourSongTrueDuration = null;
+        let ourSongPlayerInited = false;
+        let ourSongSeekPointerDown = false;
+        /** Real length of OURSONG.mp3 — file metadata wrongly reports ~22 min */
+        const OUR_SONG_DISPLAY_DURATION_SEC = 3 * 60 + 20;
+        /** Many broken/VBR MP3s report ~20–25 min; real track is shorter — don’t trust huge metadata. */
+        const OUR_SONG_MAX_TRUST_METADATA_SEC = 15 * 60;
+
+        function formatTime(s) {
+            if (!isFinite(s) || s < 0) return '--:--';
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return m + ':' + (sec < 10 ? '0' : '') + sec;
+        }
+
+        function getReliableDuration(audio) {
+            if (OUR_SONG_DISPLAY_DURATION_SEC > 0)
+                return OUR_SONG_DISPLAY_DURATION_SEC;
+            if (ourSongTrueDuration != null && isFinite(ourSongTrueDuration) && ourSongTrueDuration > 0)
+                return ourSongTrueDuration;
+            const meta = audio.duration;
+            const metaSuspicious = isFinite(meta) && meta > OUR_SONG_MAX_TRUST_METADATA_SEC;
+            const fullyLoaded = audio.readyState >= 4;
+            let fromSeek = 0;
+            if (audio.seekable && audio.seekable.length > 0)
+                fromSeek = audio.seekable.end(audio.seekable.length - 1);
+            let fromBuf = 0;
+            if (audio.buffered && audio.buffered.length > 0)
+                fromBuf = audio.buffered.end(audio.buffered.length - 1);
+            const candidate = Math.max(
+                isFinite(fromSeek) && fromSeek > 1 ? fromSeek : 0,
+                isFinite(fromBuf) && fromBuf > 1 ? fromBuf : 0
+            );
+            if (metaSuspicious) {
+                if (candidate > 10 && candidate < meta * 0.95)
+                    return candidate;
+                return 0;
+            }
+            if (candidate > 1 && isFinite(meta) && meta > candidate * 1.35 && fullyLoaded)
+                return candidate;
+            if (candidate > 1 && (!isFinite(meta) || meta <= 0))
+                return candidate;
+            if (isFinite(meta) && meta > 0 && meta < 86400)
+                return meta;
+            if (candidate > 1)
+                return candidate;
+            return 0;
+        }
+
+        async function tryDecodeOurSongDuration() {
+            if (ourSongTrueDuration != null) return;
+            const audio = document.getElementById('ourSongAudio');
+            const srcEl = audio && audio.querySelector('source');
+            let src = srcEl && srcEl.getAttribute('src');
+            if (!audio || !src) return;
+            if (!/^https?:/i.test(src) && !src.startsWith('/'))
+                try { src = new URL(src, document.baseURI || window.location.href).href; } catch (e) { return; }
+            try {
+                const res = await fetch(src);
+                if (!res.ok) return;
+                const buf = await res.arrayBuffer();
+                const AC = window.AudioContext || window.webkitAudioContext;
+                if (!AC) return;
+                const ac = new AC();
+                const decoded = await ac.decodeAudioData(buf.slice(0));
+                if (decoded.duration > 0 && isFinite(decoded.duration)) {
+                    ourSongTrueDuration = decoded.duration;
+                    updateOurSongPlayerUI();
+                }
+                if (typeof ac.close === 'function') await ac.close();
+            } catch (e) { /* file:// often blocks fetch — rely on buffered range + ended */ }
+        }
+
+        function updateOurSongPlayerUI() {
+            const audio = document.getElementById('ourSongAudio');
+            const seek = document.getElementById('ourSongSeek');
+            const curEl = document.getElementById('ourSongTimeCur');
+            const durEl = document.getElementById('ourSongTimeDur');
+            const btn = document.getElementById('ourSongPlayBtn');
+            if (!audio || !seek || !curEl || !durEl || !btn) return;
+            const dur = getReliableDuration(audio);
+            curEl.textContent = formatTime(audio.currentTime);
+            durEl.textContent = dur > 0 ? formatTime(dur) : '--:--';
+            if (!ourSongSeekPointerDown && dur > 0)
+                seek.value = String(Math.min(1000, Math.round((audio.currentTime / dur) * 1000)));
+            btn.textContent = audio.paused ? '▶' : '⏸';
+        }
+
+        function initOurSongPlayer() {
+            if (ourSongPlayerInited) return;
+            const audio = document.getElementById('ourSongAudio');
+            const seek = document.getElementById('ourSongSeek');
+            const btn = document.getElementById('ourSongPlayBtn');
+            if (!audio || !seek || !btn) return;
+            ourSongPlayerInited = true;
+
+            const refresh = () => updateOurSongPlayerUI();
+            ['timeupdate', 'loadedmetadata', 'durationchange', 'progress', 'canplay', 'canplaythrough', 'play', 'pause'].forEach(ev =>
+                audio.addEventListener(ev, refresh));
+            audio.addEventListener('ended', () => {
+                const t = audio.currentTime;
+                if (isFinite(t) && t > 1) ourSongTrueDuration = t;
+                refresh();
+            });
+
+            btn.addEventListener('click', () => {
+                if (audio.paused) audio.play().catch(() => {});
+                else audio.pause();
+            });
+
+            seek.addEventListener('pointerdown', () => { ourSongSeekPointerDown = true; });
+            seek.addEventListener('pointerup', () => { ourSongSeekPointerDown = false; refresh(); });
+            seek.addEventListener('pointercancel', () => { ourSongSeekPointerDown = false; refresh(); });
+            const applySeek = () => {
+                const dur = getReliableDuration(audio);
+                if (dur > 0) audio.currentTime = (Number(seek.value) / 1000) * dur;
+            };
+            seek.addEventListener('change', applySeek);
+            seek.addEventListener('input', () => {
+                const dur = getReliableDuration(audio);
+                const curEl = document.getElementById('ourSongTimeCur');
+                if (dur > 0 && curEl) curEl.textContent = formatTime((Number(seek.value) / 1000) * dur);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initOurSongPlayer();
+            tryDecodeOurSongDuration();
+        });
 
         function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize); resize();
@@ -332,6 +558,7 @@
                 document.getElementById('selection-container').style.display = 'none';
                 const book = document.getElementById('book-container');
                 book.style.display = 'block'; setTimeout(() => book.style.opacity = '1', 50);
+                storyRoute = route;
                 if(route === 'A') { 
                     const a = document.getElementById("myAudio"); a.volume = 0.05; a.play().catch(() => {});
                     document.getElementById('p1').classList.add('active-page');
@@ -345,9 +572,38 @@
         function nextPage(num) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById('p' + num).classList.add('active-page');
+
+            const routeB = document.getElementById('routeBAudio');
+            const ourSong = document.getElementById('ourSongAudio');
+            if (!ourSong) return;
+            const routeBChapterPages = num >= 7 && num <= 12;
+            if (num === 13) {
+                routeB.pause();
+                ourSong.volume = 1;
+                initOurSongPlayer();
+                tryDecodeOurSongDuration();
+                updateOurSongPlayerUI();
+                ourSong.play().catch(() => {});
+            } else {
+                ourSong.pause();
+                ourSong.currentTime = 0;
+                updateOurSongPlayerUI();
+                if (routeBChapterPages) {
+                    routeB.play().catch(() => {});
+                }
+            }
         }
 
         function showFinalScene() {
+            const ourSong = document.getElementById('ourSongAudio');
+            if (ourSong) { ourSong.pause(); ourSong.currentTime = 0; }
+            const routeB = document.getElementById('routeBAudio');
+            if (storyRoute === 'B') {
+                routeB.volume = 0.15;
+                routeB.play().catch(() => {});
+            } else {
+                routeB.pause();
+            }
             document.getElementById('book-container').style.opacity = '0';
             document.getElementById('finalScene').style.opacity = '1';
             setTimeout(() => {
