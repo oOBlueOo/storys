@@ -172,9 +172,18 @@
 
         .route-btn:hover, .open-btn:hover { background: var(--rose-gold); color: var(--bg-deep); box-shadow: 0 0 40px var(--glow); transform: translateY(-3px); }
 
-        .nav-btns { margin-top: 35px; display: flex; justify-content: center; gap: 15px; }
+        .nav-btns { margin-top: 35px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
         .nav-btn { background: transparent; border: 1px solid rgba(224, 161, 173, 0.3); color: var(--text-dim); padding: 12px 25px; border-radius: 30px; text-transform: uppercase; font-size: 0.8rem; cursor: pointer; transition: 0.3s; }
         .nav-btn:hover { border-color: var(--rose-gold); color: var(--rose-gold); background: rgba(224, 161, 173, 0.1); }
+        .nav-btn--danger {
+            border-color: rgba(240, 128, 128, 0.45);
+            color: #e89898;
+        }
+        .nav-btn--danger:hover {
+            border-color: #f08080;
+            color: #ffd0d0;
+            background: rgba(155, 27, 48, 0.22);
+        }
 
         .page { display: none; flex-direction: column; animation: luxeSlide 1s ease forwards; opacity: 0; }
         .active-page { display: flex; }
@@ -261,6 +270,115 @@
             letter-spacing: 0.05em;
         }
 
+        .chapter-editor-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(5, 4, 6, 0.82);
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            backdrop-filter: blur(8px);
+        }
+        .chapter-editor-modal.is-open { display: flex; }
+        .chapter-editor-panel {
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: var(--glass-bg);
+            border: 1px solid rgba(224, 161, 173, 0.3);
+            border-radius: 24px;
+            padding: 24px 22px;
+            text-align: left;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+        }
+        .chapter-editor-panel h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: var(--rose-gold);
+            margin: 0 0 16px;
+            font-weight: normal;
+            text-align: center;
+        }
+        .chapter-editor-panel label {
+            display: block;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            margin: 12px 0 6px;
+        }
+        .chapter-editor-panel input[type="text"],
+        .chapter-editor-panel select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(224, 161, 173, 0.35);
+            background: rgba(0,0,0,0.35);
+            color: var(--text-main);
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .ce-para {
+            width: 100%;
+            min-height: 72px;
+            margin-bottom: 8px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(224, 161, 173, 0.35);
+            background: rgba(0,0,0,0.35);
+            color: var(--text-main);
+            font-family: 'Playfair Display', serif;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        .chapter-editor-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .chapter-editor-actions button {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 24px;
+            cursor: pointer;
+            border: 1px solid rgba(224, 161, 173, 0.45);
+            background: transparent;
+            color: var(--text-dim);
+        }
+        .chapter-editor-actions button.primary {
+            background: linear-gradient(135deg, rgba(155, 27, 48, 0.35), rgba(224, 161, 173, 0.15));
+            color: var(--rose-gold);
+            border-color: var(--rose-gold);
+        }
+        .ce-err {
+            color: #f08080;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.8rem;
+            margin: 12px 0 0;
+            min-height: 1.2em;
+        }
+        #ce-add-para {
+            margin-top: 8px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.75rem;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px dashed rgba(224, 161, 173, 0.4);
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+        }
+
         @media (max-width: 600px) {
             .book-title { font-size: 4rem; }
             #selection-container, #book-container { padding: 40px 20px; width: 92%; }
@@ -304,98 +422,133 @@
     </div>
 
     <div id="book-container">
-        <div class="page" id="p1">
-            <h2>01. New Addington</h2>
-            <p>It started a long time ago in <b>New Addington</b>. Life was chaotic back then, but you were always a <b>safe space</b>. You made sure I was fed, looked after <b>Snowey</b>, and always showed up for our meet-ups.</p>
-            <p>You were there for me even when I was lying—and you absolutely knew I was. You were the <b>anchor</b> I didn't know I needed.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">Next →</button></div>
-        </div>
-        <div class="page" id="p2">
-            <h2>02. Frozen Nights</h2>
-            <p>I still laugh thinking about freezing in the rain on that <b>moped</b>. But my favorite memories are the quiet ones. Endless nights watching <b>Siren</b>.</p>
-            <p>Just standing there, looking in the <b>mirror together</b>. Those simple moments meant the world to me then, and they mean even more now.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(1)">← Back</button><button class="nav-btn" onclick="nextPage(3)">Next →</button></div>
-        </div>
-        <div class="page" id="p3">
-            <h2>03. The High Ground</h2>
-            <p>Remember the <b>Call of Duty Zombies</b> marathons? Surviving round after round on the phone until the sun came up. We were a <b>team</b> before we even knew how to be one in real life.</p>
-            <p>Even when the world felt heavy, those games and those calls were a <b>little bubble</b> where everything felt okay.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(2)">← Back</button><button class="nav-btn" onclick="nextPage(4)">Next →</button></div>
-        </div>
-        <div class="page" id="p4">
-            <h2>04. The Keepsakes</h2>
-            <p>Finding out you kept those old <b>GHDs</b>—and that little heart with the <b>'R'</b> on your finger—made me smile. It was like a sign that the story wasn't quite over.</p>
-            <p>It showed me that even when we were walking different paths, a <b>piece of us</b> stayed behind. I’ve never forgotten that.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(3)">← Back</button><button class="nav-btn" onclick="nextPage(5)">Next →</button></div>
-        </div>
-        <div class="page" id="p5">
-            <h2>05. Growing Up</h2>
-            <p>Watching you break cycles for <b>Lucien</b> while I do the same for <b>Jayjay</b> and <b>Ryan</b> makes me so incredibly proud. We had to learn how to be <b>parents</b> on our own.</p>
-            <p>We grew up, we changed, and we learned that being an <b>anchor</b> for someone else is the most important job we’ll ever have.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(4)">← Back</button><button class="nav-btn" onclick="nextPage(6)">Next →</button></div>
-        </div>
-        <div class="page" id="p6">
-            <h2>06. The Corner</h2>
-            <p>You’re an absolute <b>ray of sunshine</b>, Tonii. No matter how much time passes, I’m just grateful to be in <b>your corner</b>, whenever you need a friend.</p>
-            <p>Thank you for being part of my future, and for letting me be part of yours. <br><b>Ronnie x</b></p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(5)">← Back</button><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
-        </div>
+        <div id="book-pages-root"></div>
+    </div>
 
-        <div class="page" id="p7">
-            <h2>01. Reconnecting</h2>
-            <p>When I sent that message in <b>April</b>, I expected nothing back. I just wanted to say I was genuinely sorry for the person I used to be.</p>
-            <p>But then you replied. Hearing you say you had <b>no bad feelings</b> and wishing me nothing but <b>healing ✨</b> was a weight off my shoulders.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">Next →</button></div>
-        </div>
-        <div class="page" id="p8">
-            <h2>02. Happiness</h2>
-            <p>I remember what I told you. I work hard and I treat my kids good. I want to do everything just to <b>make you smile</b>.</p>
-            <p>I do it as much for me as I do for you, because <b>seeing you happy</b> is the best thing about my day. It’s a peace I don’t want to lose.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(7)">← Back</button><button class="nav-btn" onclick="nextPage(9)">Next →</button></div>
-        </div>
-        <div class="page" id="p9">
-            <h2>03. Providing</h2>
-            <p>I love being in a position where I can <b>look after you</b>. Sending you that <b>money for your food</b> made me feel good—it was about knowing you were sorted while you were out.</p>
-            <p>Being able to provide and take that stress away is exactly why I work hard. I'll always have <b>your back</b>.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(8)">← Back</button><button class="nav-btn" onclick="nextPage(10)">Next →</button></div>
-        </div>
-        <div class="page" id="p10">
-            <h2>04. Support</h2>
-            <p>I was so glad when the delivery for <b>your son's new clothes</b> finally came through. Seeing you <b>relieved</b> and able to go to bed happy was the best news.</p>
-            <p>Your <b>peace of mind</b> is important to me. If the house is calm and you're sleeping well, then everything is going right.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(9)">← Back</button><button class="nav-btn" onclick="nextPage(11)">Next →</button></div>
-        </div>
-        <div class="page" id="p11">
-            <h2>05. Present</h2>
-            <p>The <b>"No Apologies"</b> rule is now law. If you break it, you have to pick a completely random emoji and send it with zero context. I'm ready for the <b>chaos</b>.</p>
-            <p>We've both done a lot of <b>healing</b>. It feels good to just be present, without any of the old weight hanging over us.</p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(10)">← Back</button><button class="nav-btn" onclick="nextPage(12)">Next →</button></div>
-        </div>
-        <div class="page" id="p12">
-            <h2>06. Energy</h2>
-            <p>I love the <b>peace</b> we have now. No pressure, no expectations. Just sharing <b>TikToks</b> and knowing we're there for each other.</p>
-            <p>Thank you for letting me back in, Tonii. Let’s just keep this <b>good energy</b> going. You know I'll never miss a message. <br><b>Ronnie x</b></p>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(11)">← Back</button><button class="nav-btn" onclick="nextPage(13)">Next →</button></div>
-        </div>
-
-        <div class="page" id="p13">
-            <h2>07. Our Song</h2>
-            <p>I made this track for <b>you</b> and for <b>this story</b>—something you can hit play on whenever you want it in the background.</p>
-            <p>No pressure, just us. <b>Tonii &amp; Ronnie</b></p>
-            <div class="our-song-player" id="ourSongPlayerWrap">
-                <audio id="ourSongAudio" preload="auto"><source src="OURSONG.mp3" type="audio/mpeg"></audio>
-                <div class="our-song-controls">
-                    <button type="button" class="our-song-play" id="ourSongPlayBtn" aria-label="Play or pause">▶</button>
-                    <div class="our-song-bar-wrap">
-                        <input type="range" id="ourSongSeek" class="our-song-seek" min="0" max="1000" value="0" aria-label="Seek">
-                        <div class="our-song-times"><span id="ourSongTimeCur">0:00</span><span id="ourSongTimeDur">--:--</span></div>
-                    </div>
-                </div>
+    <div id="chapter-editor-modal" class="chapter-editor-modal" role="dialog" aria-modal="true" aria-labelledby="ce-heading" aria-hidden="true">
+        <div class="chapter-editor-panel">
+            <h3 id="ce-heading">New chapter</h3>
+            <label for="ce-route">Route</label>
+            <select id="ce-route">
+                <option value="A">Journey (A)</option>
+                <option value="B">Recent chapters (B)</option>
+            </select>
+            <label for="ce-title">Title</label>
+            <input type="text" id="ce-title" placeholder="Your title (numbered for this path)" autocomplete="off" />
+            <label>Paragraphs (HTML ok: &lt;b&gt;, &lt;br&gt;)</label>
+            <div id="ce-paras"></div>
+            <button type="button" id="ce-add-para">+ Paragraph</button>
+            <div class="chapter-editor-actions">
+                <button type="button" id="ce-cancel">Cancel</button>
+                <button type="button" id="ce-save" class="primary">Save &amp; publish</button>
             </div>
-            <div class="nav-btns"><button class="nav-btn" onclick="nextPage(12)">← Back</button><button class="nav-btn" onclick="showFinalScene()">Finish</button></div>
+            <p id="ce-err" class="ce-err"></p>
         </div>
     </div>
 
+    <!-- Same shape as data/chapters.json — used when opening index.html as file:// (fetch blocked). After editing chapters, paste updated JSON here or use a local server. -->
+    <script type="application/json" id="chapters-fallback">
+{
+  "routeA": [
+    {
+      "title": "01. New Addington",
+      "paragraphs": [
+        "It started a long time ago in <b>New Addington</b>. Life was chaotic back then, but you were always a <b>safe space</b>. You made sure I was fed, looked after <b>Snowey</b>, and always showed up for our meet-ups.",
+        "You were there for me even when I was lying—and you absolutely knew I was. You were the <b>anchor</b> I didn't know I needed."
+      ]
+    },
+    {
+      "title": "02. Frozen Nights",
+      "paragraphs": [
+        "I still laugh thinking about freezing in the rain on that <b>moped</b>. But my favorite memories are the quiet ones. Endless nights watching <b>Siren</b>.",
+        "Just standing there, looking in the <b>mirror together</b>. Those simple moments meant the world to me then, and they mean even more now."
+      ]
+    },
+    {
+      "title": "03. The High Ground",
+      "paragraphs": [
+        "Remember the <b>Call of Duty Zombies</b> marathons? Surviving round after round on the phone until the sun came up. We were a <b>team</b> before we even knew how to be one in real life.",
+        "Even when the world felt heavy, those games and those calls were a <b>little bubble</b> where everything felt okay."
+      ]
+    },
+    {
+      "title": "04. The Keepsakes",
+      "paragraphs": [
+        "Finding out you kept those old <b>GHDs</b>—and that little heart with the <b>'R'</b> on your finger—made me smile. It was like a sign that the story wasn't quite over.",
+        "It showed me that even when we were walking different paths, a <b>piece of us</b> stayed behind. I’ve never forgotten that."
+      ]
+    },
+    {
+      "title": "05. Growing Up",
+      "paragraphs": [
+        "Watching you break cycles for <b>Lucien</b> while I do the same for <b>Jayjay</b> and <b>Ryan</b> makes me so incredibly proud. We had to learn how to be <b>parents</b> on our own.",
+        "We grew up, we changed, and we learned that being an <b>anchor</b> for someone else is the most important job we’ll ever have."
+      ]
+    },
+    {
+      "title": "06. The Corner",
+      "paragraphs": [
+        "You’re an absolute <b>ray of sunshine</b>, Tonii. No matter how much time passes, I’m just grateful to be in <b>your corner</b>, whenever you need a friend.",
+        "Thank you for being part of my future, and for letting me be part of yours. <br><b>Ronnie x</b>"
+      ]
+    }
+  ],
+  "routeB": [
+    {
+      "title": "01. Reconnecting",
+      "paragraphs": [
+        "When I sent that message in <b>April</b>, I expected nothing back. I just wanted to say I was genuinely sorry for the person I used to be.",
+        "But then you replied. Hearing you say you had <b>no bad feelings</b> and wishing me nothing but <b>healing ✨</b> was a weight off my shoulders."
+      ]
+    },
+    {
+      "title": "02. Happiness",
+      "paragraphs": [
+        "I remember what I told you. I work hard and I treat my kids good. I want to do everything just to <b>make you smile</b>.",
+        "I do it as much for me as I do for you, because <b>seeing you happy</b> is the best thing about my day. It’s a peace I don’t want to lose."
+      ]
+    },
+    {
+      "title": "03. Providing",
+      "paragraphs": [
+        "I love being in a position where I can <b>look after you</b>. Sending you that <b>money for your food</b> made me feel good—it was about knowing you were sorted while you were out.",
+        "Being able to provide and take that stress away is exactly why I work hard. I'll always have <b>your back</b>."
+      ]
+    },
+    {
+      "title": "04. Support",
+      "paragraphs": [
+        "I was so glad when the delivery for <b>your son's new clothes</b> finally came through. Seeing you <b>relieved</b> and able to go to bed happy was the best news.",
+        "Your <b>peace of mind</b> is important to me. If the house is calm and you're sleeping well, then everything is going right."
+      ]
+    },
+    {
+      "title": "05. Present",
+      "paragraphs": [
+        "The <b>\"No Apologies\"</b> rule is now law. If you break it, you have to pick a completely random emoji and send it with zero context. I'm ready for the <b>chaos</b>.",
+        "We've both done a lot of <b>healing</b>. It feels good to just be present, without any of the old weight hanging over us."
+      ]
+    },
+    {
+      "title": "06. Energy",
+      "paragraphs": [
+        "I love the <b>peace</b> we have now. No pressure, no expectations. Just sharing <b>TikToks</b> and knowing we're there for each other.",
+        "Thank you for letting me back in, Tonii. Let’s just keep this <b>good energy</b> going. You know I'll never miss a message. <br><b>Ronnie x</b>"
+      ]
+    }
+  ],
+  "ourSongChapter": {
+    "title": "07. Our Song",
+    "paragraphs": [
+      "I made this track for <b>you</b> and for <b>this story</b>—something you can hit play on whenever you want it in the background.",
+      "No pressure, just us. <b>Tonii &amp; Ronnie</b>"
+    ],
+    "audioSrc": "OURSONG.mp3"
+  }
+}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.js"></script>
     <script>
         const canvas = document.getElementById('rainCanvas');
         const ctx = canvas.getContext('2d');
@@ -404,6 +557,400 @@
         let ourSongTrueDuration = null;
         let ourSongPlayerInited = false;
         let ourSongSeekPointerDown = false;
+        /** Set when chapters load — used for navigation &amp; route B bed music */
+        let STORY_META = { nA: 0, nB: 0, ourSongPage: 0, firstB: 0, lastBText: 0 };
+        /** Full story object (mutated when saving new chapters to Supabase) */
+        let storyData = null;
+        let supabaseClient = null;
+        /** First N chapters per path are fixed story; delete only applies after this index (0-based: 6 = chapter 7). */
+        const ORIGINAL_CHAPTERS_PER_ROUTE = 6;
+
+        /*
+         * SUPABASE (one-time setup)
+         * 1. https://supabase.com → New project → wait until ready.
+         * 2. SQL Editor → paste the whole supabase/schema.sql file → Run.
+         * 3. Table Editor → story_editor_secret → set save_token to a long random string.
+         * 4. Project Settings → API:
+         *    - Copy "Project URL" → SUPABASE_URL below.
+         *    - Copy the publishable key (sb_publishable_...) OR legacy "anon" JWT → SUPABASE_ANON_KEY.
+         *    - Never put the secret key (sb_secret_...) in this file — only publishable/anon in the browser.
+         * 5. Same save_token as in the DB → EDITOR_SAVE_TOKEN below.
+         * 6. Serve over https or localhost. Last page (Our Song) → + Add chapter → Save & publish.
+         */
+        const SUPABASE_URL = 'https://pmayokvnwrdmuscqhjea.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_c4ss8hqcn8Kxk86MWKwI5Q_xhJti6ux';
+        const EDITOR_SAVE_TOKEN = 'duhskabgfuyhsaghbeuybhaiusewbhfuija';
+
+        function dbEditorEnabled() {
+            return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY && EDITOR_SAVE_TOKEN);
+        }
+
+        function getSupabase() {
+            if (!dbEditorEnabled()) return null;
+            if (!supabaseClient) {
+                const lib = window.supabase;
+                if (!lib || typeof lib.createClient !== 'function') return null;
+                supabaseClient = lib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+            return supabaseClient;
+        }
+
+        async function loadStoryFromSupabase() {
+            const sb = getSupabase();
+            if (!sb) return null;
+            const { data, error } = await sb.from('story_content').select('content').eq('id', 1).maybeSingle();
+            if (error) {
+                console.warn(error);
+                return null;
+            }
+            if (!data || data.content == null) return null;
+            const c = data.content;
+            if (typeof c === 'string') {
+                try { return JSON.parse(c); } catch (e) { return null; }
+            }
+            return c;
+        }
+
+        function formatSaveError(e) {
+            const raw = (e && e.message) ? e.message : String(e);
+            const details = (e && e.details) ? String(e.details) : '';
+            const combined = (raw + ' ' + details).trim();
+            let msg = combined || raw;
+            if (/unauthorized|wrong_save_token|no_editor_secret_row|P0001/i.test(msg))
+                msg = 'Save token mismatch. In Supabase → SQL Editor, run the file supabase/sync_save_token_to_index.sql (or set story_editor_secret.save_token to exactly match EDITOR_SAVE_TOKEN in index.html). If it still fails, use Settings → API Keys → \"Legacy anon…\" JWT as SUPABASE_ANON_KEY instead of sb_publishable_.';
+            return msg;
+        }
+
+        async function persistStoryToSupabase() {
+            const sb = getSupabase();
+            if (!sb) throw new Error('Supabase library not loaded');
+            const { error } = await sb.rpc('save_chapters', {
+                p_token: String(EDITOR_SAVE_TOKEN || '').trim(),
+                p_json: storyData
+            });
+            if (error) throw error;
+        }
+
+        function navBtn(label, targetPage) {
+            const b = document.createElement('button');
+            b.className = 'nav-btn';
+            b.type = 'button';
+            b.textContent = label;
+            b.addEventListener('click', () => nextPage(targetPage));
+            return b;
+        }
+
+        function navFinish() {
+            const b = document.createElement('button');
+            b.className = 'nav-btn';
+            b.type = 'button';
+            b.textContent = 'Finish';
+            b.addEventListener('click', showFinalScene);
+            return b;
+        }
+
+        function navAddChapter(preferredRoute) {
+            const b = document.createElement('button');
+            b.className = 'nav-btn';
+            b.type = 'button';
+            b.textContent = '+ Add chapter';
+            b.addEventListener('click', () => openChapterEditor(preferredRoute));
+            return b;
+        }
+
+        function navDeleteChapter(pageNum, routeKey) {
+            const b = document.createElement('button');
+            b.className = 'nav-btn nav-btn--danger';
+            b.type = 'button';
+            b.textContent = 'Delete chapter';
+            b.setAttribute('aria-label', 'Delete this chapter');
+            b.addEventListener('click', () => deleteChapterAtPage(pageNum, routeKey));
+            return b;
+        }
+
+        function buildBook(story) {
+            const root = document.getElementById('book-pages-root');
+            root.innerHTML = '';
+            ourSongPlayerInited = false;
+
+            const nA = story.routeA.length;
+            const nB = story.routeB.length;
+            const ourSongPage = nA + nB + 1;
+
+            STORY_META = {
+                nA, nB, ourSongPage,
+                firstB: nA + 1,
+                lastBText: nA + nB
+            };
+
+            let pageNum = 1;
+
+            story.routeA.forEach((ch, i) => {
+                const div = document.createElement('div');
+                div.className = 'page';
+                div.id = 'p' + pageNum;
+                const h2 = document.createElement('h2');
+                h2.textContent = ch.title;
+                div.appendChild(h2);
+                ch.paragraphs.forEach(html => {
+                    const p = document.createElement('p');
+                    p.innerHTML = html;
+                    div.appendChild(p);
+                });
+                const nav = document.createElement('div');
+                nav.className = 'nav-btns';
+                if (i > 0) nav.appendChild(navBtn('← Back', pageNum - 1));
+                if (i < nA - 1) nav.appendChild(navBtn('Next →', pageNum + 1));
+                else {
+                    nav.appendChild(navFinish());
+                }
+                if (dbEditorEnabled() && nA > 1 && i >= ORIGINAL_CHAPTERS_PER_ROUTE)
+                    nav.appendChild(navDeleteChapter(pageNum, 'A'));
+                div.appendChild(nav);
+                root.appendChild(div);
+                pageNum++;
+            });
+
+            story.routeB.forEach((ch, i) => {
+                const div = document.createElement('div');
+                div.className = 'page';
+                div.id = 'p' + pageNum;
+                const h2 = document.createElement('h2');
+                h2.textContent = ch.title;
+                div.appendChild(h2);
+                ch.paragraphs.forEach(html => {
+                    const p = document.createElement('p');
+                    p.innerHTML = html;
+                    div.appendChild(p);
+                });
+                const nav = document.createElement('div');
+                nav.className = 'nav-btns';
+                if (i > 0) nav.appendChild(navBtn('← Back', pageNum - 1));
+                if (i < nB - 1) nav.appendChild(navBtn('Next →', pageNum + 1));
+                else {
+                    nav.appendChild(navBtn('Next →', ourSongPage));
+                }
+                if (dbEditorEnabled() && nB > 1 && i >= ORIGINAL_CHAPTERS_PER_ROUTE)
+                    nav.appendChild(navDeleteChapter(pageNum, 'B'));
+                div.appendChild(nav);
+                root.appendChild(div);
+                pageNum++;
+            });
+
+            const os = story.ourSongChapter;
+            const div = document.createElement('div');
+            div.className = 'page';
+            div.id = 'p' + ourSongPage;
+            const h2 = document.createElement('h2');
+            h2.textContent = os.title;
+            div.appendChild(h2);
+            os.paragraphs.forEach(html => {
+                const p = document.createElement('p');
+                p.innerHTML = html;
+                div.appendChild(p);
+            });
+
+            const playerWrap = document.createElement('div');
+            playerWrap.className = 'our-song-player';
+            playerWrap.id = 'ourSongPlayerWrap';
+            const audio = document.createElement('audio');
+            audio.id = 'ourSongAudio';
+            audio.preload = 'auto';
+            const source = document.createElement('source');
+            source.src = os.audioSrc || 'OURSONG.mp3';
+            source.type = 'audio/mpeg';
+            audio.appendChild(source);
+            playerWrap.appendChild(audio);
+
+            const ctr = document.createElement('div');
+            ctr.className = 'our-song-controls';
+            const playBtn = document.createElement('button');
+            playBtn.type = 'button';
+            playBtn.className = 'our-song-play';
+            playBtn.id = 'ourSongPlayBtn';
+            playBtn.setAttribute('aria-label', 'Play or pause');
+            playBtn.textContent = '▶';
+            const barWrap = document.createElement('div');
+            barWrap.className = 'our-song-bar-wrap';
+            const seek = document.createElement('input');
+            seek.type = 'range';
+            seek.className = 'our-song-seek';
+            seek.id = 'ourSongSeek';
+            seek.min = '0';
+            seek.max = '1000';
+            seek.value = '0';
+            seek.setAttribute('aria-label', 'Seek');
+            const times = document.createElement('div');
+            times.className = 'our-song-times';
+            const t0 = document.createElement('span');
+            t0.id = 'ourSongTimeCur';
+            t0.textContent = '0:00';
+            const t1 = document.createElement('span');
+            t1.id = 'ourSongTimeDur';
+            t1.textContent = '--:--';
+            times.appendChild(t0);
+            times.appendChild(t1);
+            barWrap.appendChild(seek);
+            barWrap.appendChild(times);
+            ctr.appendChild(playBtn);
+            ctr.appendChild(barWrap);
+            playerWrap.appendChild(ctr);
+            div.appendChild(playerWrap);
+
+            const nav = document.createElement('div');
+            nav.className = 'nav-btns';
+            nav.appendChild(navBtn('← Back', ourSongPage - 1));
+            nav.appendChild(navFinish());
+            nav.appendChild(navAddChapter('B'));
+            div.appendChild(nav);
+            root.appendChild(div);
+        }
+
+        function appendParaField(text) {
+            const ta = document.createElement('textarea');
+            ta.className = 'ce-para';
+            ta.value = text;
+            ta.placeholder = 'Write here…';
+            document.getElementById('ce-paras').appendChild(ta);
+        }
+
+        function openChapterEditor(preferredRoute) {
+            const modal = document.getElementById('chapter-editor-modal');
+            document.getElementById('ce-route').value = preferredRoute === 'A' ? 'A' : 'B';
+            document.getElementById('ce-title').value = '';
+            document.getElementById('ce-paras').innerHTML = '';
+            appendParaField('');
+            const errEl = document.getElementById('ce-err');
+            errEl.textContent = '';
+            if (!dbEditorEnabled()) {
+                errEl.textContent = 'To publish from the site: add your Supabase URL, anon key, and EDITOR_SAVE_TOKEN in index.html (see supabase/schema.sql).';
+            }
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeChapterEditor() {
+            const modal = document.getElementById('chapter-editor-modal');
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        /** Next chapter on this route: "07. Your title" (matches 01. … style per route). */
+        function numberedTitleForNewChapter(routeLetter, titleRaw) {
+            const key = routeLetter === 'A' ? 'routeA' : 'routeB';
+            const n = storyData[key].length + 1;
+            const prefix = String(n).padStart(2, '0') + '. ';
+            const stripped = (titleRaw || 'New chapter').replace(/^\d{1,2}\.\s*/, '').trim() || 'New chapter';
+            return prefix + stripped;
+        }
+
+        async function onSaveNewChapter() {
+            const errEl = document.getElementById('ce-err');
+            errEl.textContent = '';
+            if (!dbEditorEnabled()) {
+                errEl.textContent = 'Configure Supabase in index.html first.';
+                return;
+            }
+            const route = document.getElementById('ce-route').value;
+            const key = route === 'A' ? 'routeA' : 'routeB';
+            const titleInput = document.getElementById('ce-title').value.trim() || 'New chapter';
+            const title = numberedTitleForNewChapter(route, titleInput);
+            const raw = [...document.querySelectorAll('#ce-paras .ce-para')].map(t => t.value.trim());
+            const paragraphs = raw.some(Boolean) ? raw.filter(Boolean) : [''];
+            const chapter = { title, paragraphs, userAdded: true };
+
+            storyData[key].push(chapter);
+            try {
+                await persistStoryToSupabase();
+            } catch (e) {
+                storyData[key].pop();
+                errEl.textContent = formatSaveError(e);
+                return;
+            }
+
+            closeChapterEditor();
+            const newPage = route === 'A'
+                ? storyData.routeA.length
+                : storyData.routeA.length + storyData.routeB.length;
+            buildBook(storyData);
+            initOurSongPlayer();
+            tryDecodeOurSongDuration();
+            nextPage(newPage);
+        }
+
+        async function deleteChapterAtPage(pageNum, routeKey) {
+            if (!dbEditorEnabled()) {
+                alert('Configure Supabase in index.html to delete chapters.');
+                return;
+            }
+            const arr = routeKey === 'A' ? storyData.routeA : storyData.routeB;
+            if (arr.length <= 1) {
+                alert('There must be at least one chapter on this path.');
+                return;
+            }
+            const idx = routeKey === 'A'
+                ? pageNum - 1
+                : pageNum - storyData.routeA.length - 1;
+            if (idx < 0 || idx >= arr.length) return;
+            if (idx < ORIGINAL_CHAPTERS_PER_ROUTE) {
+                alert('Chapters 1–6 on this path are the original story and cannot be deleted.');
+                return;
+            }
+            if (!confirm('Delete this chapter for everyone? This cannot be undone.')) return;
+
+            const removed = arr[idx];
+            arr.splice(idx, 1);
+            try {
+                await persistStoryToSupabase();
+            } catch (e) {
+                arr.splice(idx, 0, removed);
+                alert(formatSaveError(e));
+                return;
+            }
+
+            const goTo = Math.max(1, pageNum - 1);
+            buildBook(storyData);
+            initOurSongPlayer();
+            tryDecodeOurSongDuration();
+            nextPage(goTo);
+        }
+
+        function setupChapterEditorModal() {
+            const modal = document.getElementById('chapter-editor-modal');
+            const panel = modal.querySelector('.chapter-editor-panel');
+            document.getElementById('ce-cancel').addEventListener('click', closeChapterEditor);
+            modal.addEventListener('click', function (e) { if (e.target === modal) closeChapterEditor(); });
+            panel.addEventListener('click', function (e) { e.stopPropagation(); });
+            document.getElementById('ce-add-para').addEventListener('click', function () { appendParaField(''); });
+            document.getElementById('ce-save').addEventListener('click', function () { onSaveNewChapter(); });
+        }
+
+        async function initStory() {
+            const root = document.getElementById('book-pages-root');
+            let story = await loadStoryFromSupabase();
+            if (!story) {
+                try {
+                    const res = await fetch('data/chapters.json', { cache: 'no-store' });
+                    if (res.ok) story = await res.json();
+                } catch (e) { /* file:// or offline */ }
+            }
+            if (!story && root) {
+                const fb = document.getElementById('chapters-fallback');
+                if (fb && fb.textContent.trim()) {
+                    try { story = JSON.parse(fb.textContent); } catch (e2) { /* invalid fallback */ }
+                }
+            }
+            if (!story) {
+                if (root) {
+                    root.innerHTML = '<p style="color:#e0a1ad;padding:1.5rem;font-size:1rem;">Could not load the story. Use a local server, set up <b>data/chapters.json</b>, or the <b>chapters-fallback</b> block in <b>index.html</b>. To load from the cloud first, configure Supabase at the top of this file.</p>';
+                }
+                return;
+            }
+            storyData = JSON.parse(JSON.stringify(story));
+            buildBook(storyData);
+            initOurSongPlayer();
+            tryDecodeOurSongDuration();
+        }
         /** Real length of OURSONG.mp3 — file metadata wrongly reports ~22 min */
         const OUR_SONG_DISPLAY_DURATION_SEC = 3 * 60 + 20;
         /** Many broken/VBR MP3s report ~20–25 min; real track is shorter — don’t trust huge metadata. */
@@ -526,9 +1073,9 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initOurSongPlayer();
-            tryDecodeOurSongDuration();
+        document.addEventListener('DOMContentLoaded', function () {
+            setupChapterEditorModal();
+            initStory();
         });
 
         function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
@@ -559,36 +1106,44 @@
                 const book = document.getElementById('book-container');
                 book.style.display = 'block'; setTimeout(() => book.style.opacity = '1', 50);
                 storyRoute = route;
-                if(route === 'A') { 
+                if(route === 'A') {
+                    const pageEl = document.getElementById('p1');
+                    if (!pageEl) return;
                     const a = document.getElementById("myAudio"); a.volume = 0.05; a.play().catch(() => {});
-                    document.getElementById('p1').classList.add('active-page');
-                } else { 
+                    pageEl.classList.add('active-page');
+                } else {
+                    const pid = STORY_META.firstB;
+                    const pageEl = pid > 0 ? document.getElementById('p' + pid) : null;
+                    if (!pageEl) return;
                     const b = document.getElementById("routeBAudio"); b.volume = 0.15; b.play().catch(() => {});
-                    document.getElementById('p7').classList.add('active-page');
+                    pageEl.classList.add('active-page');
                 }
             }, 800);
         }
 
         function nextPage(num) {
+            const target = document.getElementById('p' + num);
+            if (!target) return;
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById('p' + num).classList.add('active-page');
+            target.classList.add('active-page');
 
             const routeB = document.getElementById('routeBAudio');
             const ourSong = document.getElementById('ourSongAudio');
-            if (!ourSong) return;
-            const routeBChapterPages = num >= 7 && num <= 12;
-            if (num === 13) {
-                routeB.pause();
+            const routeBChapterPages = num >= STORY_META.firstB && num <= STORY_META.lastBText;
+            if (num === STORY_META.ourSongPage && ourSong) {
+                if (routeB) routeB.pause();
                 ourSong.volume = 1;
                 initOurSongPlayer();
                 tryDecodeOurSongDuration();
                 updateOurSongPlayerUI();
                 ourSong.play().catch(() => {});
             } else {
-                ourSong.pause();
-                ourSong.currentTime = 0;
-                updateOurSongPlayerUI();
-                if (routeBChapterPages) {
+                if (ourSong) {
+                    ourSong.pause();
+                    ourSong.currentTime = 0;
+                    updateOurSongPlayerUI();
+                }
+                if (routeBChapterPages && routeB) {
                     routeB.play().catch(() => {});
                 }
             }
